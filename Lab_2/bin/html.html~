@@ -2,15 +2,18 @@
 
 <html>
 <head><title>Number Guess Game</title>
+<meta charset="UTF-8">
 <script type = "text/javascript">
 function inputfocus(form){
 form.guess.focus()
 }
 </script>
+
 </head>
 
 <body onLoad="inputfocus(document.guessform);"> 
 
+<split here>
 
 <form name="guessform">
 <h1> Welcome to the Guessing Game! </h1>
