@@ -167,6 +167,19 @@ public class HttpServer{
 		}
 	}
 	
+	private static void assignVals(String value) {
+		String[] cookies = value.split(";");
+		String cookie1 = cookies[0];
+		clientId = Integer.parseInt(cookie1.split("=")[1]);
+		
+		String cookie2 = cookies[1];
+		String[] Guesses = cookie2.split(":");
+		sessionId = Integer.parseInt(Guesses[0].split("=")[1]);
+		numGuess = Integer.parseInt(Guesses[1]);
+		lowGuess = Integer.parseInt(Guesses[2]);
+		highGuess = Integer.parseInt(Guesses[3]);
+	}
+	
 	private synchronized static int setClientId() {
 		clients++;
 		return clients;
