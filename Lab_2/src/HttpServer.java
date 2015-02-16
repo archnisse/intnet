@@ -54,11 +54,16 @@ public class HttpServer{
 			tokens.nextToken(); // Ordet GET
 			
 			String requestedDocument = tokens.nextToken();
-			String guess = tokens.nextToken();
-			char[] charGuess = guess.toCharArray();
-			int guessed = checkGuess(charGuess);
+			int guess = 0;
+			try {
+				guess = Integer.parseInt(tokens.nextToken().split("=")[1]);
+			} catch (Exception e) {
+				System.err.println(e);
+			}
+			//char[] charGuess = guess.toCharArray();
+			//int guessed = checkGuess(charGuess);
 			//guess = guess.substring(6,guess.length());
-			System.out.println("guess: " + guessed);
+			System.out.println("guess: " + guess);
 			//System.out.println("guess length: " + guess.length() );
 			
 			int interval = 0;
@@ -130,7 +135,7 @@ public class HttpServer{
 				String debug = new String(b);
 				if (debug.equals("<split here>")) {
 					
-					if (guess.length() > 0) {
+					if (guess > 0) {
 						//response.println(answer);
 						System.out.println("Good for you.");
 					} else {
@@ -161,31 +166,6 @@ public class HttpServer{
 		return sessions;
 	}
 	
-	/*
-	 * Checks if the user has made a guess and
-	 * returns that guess.
-	 * 
-	 * @param: a char array of the potential guess-part
-	 * @return: the guessed integer or -1
-	 */
-	private static int checkGuess(char[] guess) {
-		char[] search = {'g','u','e','s','s'};
-		int j = 0;
-		for (int i = 0; i < guess.length; i++) {
-			if (guess[i] == search[j]) {
-				j++;
-				if (j >= search.length) {
-					String tmp = guess.toString();
-					tmp = tmp.substring(i+1, i+3); // Should include "XY"
-					int answer = (int)Integer.parseInt(tmp);
-					return answer;
-				}
-			} else {
-				j = 0;
-			}
-		}
-		return -1;
-	}
 //private class ClientHandler implements Runnable {
 //		
 //		BufferedReader indata;
