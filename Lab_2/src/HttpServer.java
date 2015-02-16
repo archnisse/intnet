@@ -6,7 +6,9 @@ import java.util.ArrayList;
 
 public class HttpServer{
 	
+	static int clients = 0;
 	static int sessions = 0;
+	static int numguess = 0;
 	static boolean cookie = false, correct = false;
 	static ArrayList<Integer> guesses = new ArrayList<Integer>();
 	static int lowguess = 1, highguess = 100;
@@ -111,6 +113,8 @@ public class HttpServer{
 			if (cookie) {
 				System.out.println("The cookie is set. This user should not get a new id.");
 				System.out.println("value: " + value);
+			}else {
+				System.out.println("Could not read cookie.");
 			}
 			System.out.println("Förfrågan klar.");
 			s.shutdownInput();
@@ -125,12 +129,10 @@ public class HttpServer{
 			if(requestedDocument.indexOf(".gif") != -1)
 				response.println("Content-Type: image/gif");
 
-			String clientId = null;
-			if (!cookie) {
-				response.println("Set-Cookie: clientId="+setSessionId()+"; expires=Wednesday,31-Dec-15 21:00:00 GMT");
-			}
-
+			System.out.println(setCookie(numguess, lowguess, highguess, sessions, cookie, clients));
 			response.println();
+			
+			
 			File f = new File("."+requestedDocument);
 			FileInputStream infil = new FileInputStream(f);
 			byte[] b = new byte[1024];
@@ -165,51 +167,29 @@ public class HttpServer{
 		}
 	}
 	
+	private synchronized static int setClientId() {
+		clients++;
+		return clients;
+	}
+	
 	private synchronized static int setSessionId() {
 		sessions++;
 		return sessions;
 	}
 	
-//private class ClientHandler implements Runnable {
-//		
-//		BufferedReader indata;
-//		Socket s;
-//		int id;
-//		ArrayList<Integer> guesses;
-//		
-//		public ClientHandler(Socket s, int id) {
-//			this.s = s;
-//			this.id = id;
-//		
-//
-//			try {
-//				//läser in det som klienten skriver
-//				indata = new BufferedReader(new InputStreamReader(s.getInputStream()));
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		
-//		public void run() {
-//			try {
-//				while( (text = indata.readLine()) != null){
-//					//lägger medddelandena i en kö
-//					broadcast.addMessage(text);
-//					//skriver ut klientens meddelande till alla andra anslutna klienter
-//					broadcast.printBroadcast(id);
-//				}
-//				// Körs när klienten kopplar ifrån
-//				System.out.println("Client nr " + id + " is now disconnected.");
-//				//tar bort klient
-//				broadcast.removeClient(id);
-//				System.out.println("The number of active clients are now: " + broadcast.getActiveClients());
-//				//stänger socket
-//				s.shutdownInput();
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		
-//	}
+	private synchronized static String setCookie(int numguess, int lowguess, int highguess, int sessions, boolean cookie, int clients){
+		String cookieContent = null;
+		
+		if (!cookie) {
+			//uppdaterar client id
+			cookieContent = "Set-Cookie: clientId="+setClientId()+"; expires=Wednesday,31-Dec-15 21:00:00 GMT";
+		}
+		else {
+			//uppdaterar session id och gissningsinfo
+			cookieContent+="Set-Cookie: sessionId="+setSessionId()+"; NumGuess="+numguess+"; Low guess="+lowguess+"; High guess="+highguess;
+		}
+
+		return cookieContent;
+	}
 	
 }
