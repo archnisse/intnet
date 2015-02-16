@@ -38,7 +38,7 @@ public class HttpServer{
 	
 		
 		System.out.println("Skapar Serversocket");
-		ServerSocket ss = new ServerSocket(8180);
+		ServerSocket ss = new ServerSocket(8080);
 		
 		while(true){
 			System.out.println("Väntar på klient...");
@@ -55,9 +55,11 @@ public class HttpServer{
 			
 			String requestedDocument = tokens.nextToken();
 			String guess = tokens.nextToken();
-			guess = guess.substring(6,guess.length());
-			System.out.println("guess: " + guess);
-			System.out.println("guess length: " + guess.length() );
+			char[] charGuess = guess.toCharArray();
+			int guessed = checkGuess(charGuess);
+			//guess = guess.substring(6,guess.length());
+			System.out.println("guess: " + guessed);
+			//System.out.println("guess length: " + guess.length() );
 			
 			int interval = 0;
 //			boolean tooHigh = false, tooLow = false;
@@ -159,6 +161,31 @@ public class HttpServer{
 		return sessions;
 	}
 	
+	/*
+	 * Checks if the user has made a guess and
+	 * returns that guess.
+	 * 
+	 * @param: a char array of the potential guess-part
+	 * @return: the guessed integer or -1
+	 */
+	private static int checkGuess(char[] guess) {
+		char[] search = {'g','u','e','s','s'};
+		int j = 0;
+		for (int i = 0; i < guess.length; i++) {
+			if (guess[i] == search[j]) {
+				j++;
+				if (j >= search.length) {
+					String tmp = guess.toString();
+					tmp = tmp.substring(i+1, i+3); // Should include "XY"
+					int answer = (int)Integer.parseInt(tmp);
+					return answer;
+				}
+			} else {
+				j = 0;
+			}
+		}
+		return -1;
+	}
 //private class ClientHandler implements Runnable {
 //		
 //		BufferedReader indata;
