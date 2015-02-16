@@ -96,6 +96,7 @@ public class HttpServer{
 //			String answer = setAnswer(lowguess, highguess, correct, tooHigh, tooLow);
 //			
 			//skriver ut info om host
+			int value = 0;
 			while( (str = request.readLine()) != null && str.length() > 0) {
 				System.out.println(str);
 				String tmp = str.substring(0, 6);
@@ -103,11 +104,14 @@ public class HttpServer{
 					tmp = str.substring(7);
 					String[] tmplist = tmp.split("=");
 					String name = tmplist[0];
-					int value = Integer.parseInt(tmplist[1]);
+					value = Integer.parseInt(tmplist[1]);
 					cookie = true;
 				}
 			}
-			
+			if (cookie) {
+				System.out.println("The cookie is set. This user should not get a new id.");
+				System.out.println("value: " + value);
+			}
 			System.out.println("Förfrågan klar.");
 			s.shutdownInput();
 
