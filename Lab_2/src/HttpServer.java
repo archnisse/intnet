@@ -96,15 +96,15 @@ public class HttpServer{
 //			String answer = setAnswer(lowguess, highguess, correct, tooHigh, tooLow);
 //			
 			//skriver ut info om host
-			int value = 0;
+			String value = "";
 			while( (str = request.readLine()) != null && str.length() > 0) {
 				System.out.println(str);
-				String tmp = str.substring(0, 6);
-				if (tmp.equals("Cookie:")) {
-					tmp = str.substring(7);
-					String[] tmplist = tmp.split("=");
-					String name = tmplist[0];
-					value = Integer.parseInt(tmplist[1]);
+				String[] tmp = str.split(":");
+				if (tmp[0].equals("Cookie")) {
+					//tmp = str.substring(7);
+					//String[] tmplist = tmp.split("=");
+					//String name = tmplist[0];
+					value = tmp[1];
 					cookie = true;
 				}
 			}
