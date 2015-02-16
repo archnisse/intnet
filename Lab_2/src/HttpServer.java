@@ -19,20 +19,11 @@ public class HttpServer{
 	static String htmlAnswer = "";
 
 	public static void main(String[] args) throws IOException{
-		
-		
-		
-		
-		
-		
-		
+
 		//Att göra:
 
 		// Se till att flera klienter kan gissa samtidigt.
-		
-		
-		
-		
+
 		//sätt svar till ett random nummer
 		Random randomGenerator = new Random();
 		int randomNum = randomGenerator.nextInt(100)+1;
@@ -49,8 +40,9 @@ public class HttpServer{
 			BufferedReader request = new BufferedReader(new InputStreamReader(s.getInputStream()));
 			
 			String str = request.readLine();
-			//printar request
-			System.out.println(str);
+			if (str.equals(null)) {
+				continue;
+			}
 			
 			StringTokenizer tokens = new StringTokenizer(str," ?");
 			tokens.nextToken(); // Ordet GET
