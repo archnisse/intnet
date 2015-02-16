@@ -112,7 +112,6 @@ public class HttpServer{
 			}
 			if (cookie) {
 				System.out.println("The cookie is set. This user should not get a new id.");
-				System.out.println("value: " + value);
 			}else {
 				System.out.println("Could not read cookie.");
 			}
@@ -128,10 +127,11 @@ public class HttpServer{
 			
 			if(requestedDocument.indexOf(".gif") != -1)
 				response.println("Content-Type: image/gif");
-
-			System.out.println(setCookie(numguess, lowguess, highguess, sessions, cookie, clients));
-			response.println();
 			
+			
+			System.out.println(setCookie(numguess, lowguess, highguess, sessions, cookie, value));
+			response.println();
+
 			
 			File f = new File("."+requestedDocument);
 			FileInputStream infil = new FileInputStream(f);
@@ -170,14 +170,14 @@ public class HttpServer{
 	private static void assignVals(String value) {
 		String[] cookies = value.split(";");
 		String cookie1 = cookies[0];
-		clientId = Integer.parseInt(cookie1.split("=")[1]);
+		int clientId = Integer.parseInt(cookie1.split("=")[1]);
 		
 		String cookie2 = cookies[1];
 		String[] Guesses = cookie2.split(":");
-		sessionId = Integer.parseInt(Guesses[0].split("=")[1]);
-		numGuess = Integer.parseInt(Guesses[1]);
-		lowGuess = Integer.parseInt(Guesses[2]);
-		highGuess = Integer.parseInt(Guesses[3]);
+		int sessionId = Integer.parseInt(Guesses[0].split("=")[1]);
+		int numGuess = Integer.parseInt(Guesses[1]);
+		int lowGuess = Integer.parseInt(Guesses[2]);
+		int highGuess = Integer.parseInt(Guesses[3]);
 	}
 	
 	private synchronized static int setClientId() {
@@ -190,8 +190,8 @@ public class HttpServer{
 		return sessions;
 	}
 	
-	private synchronized static String setCookie(int numguess, int lowguess, int highguess, int sessions, boolean cookie, int clients){
-		String cookieContent = null;
+	private synchronized static String setCookie(int numguess, int lowguess, int highguess, int sessions, boolean cookie, String value){
+		String cookieContent ="";
 		
 		if (!cookie) {
 			//uppdaterar client id
@@ -199,7 +199,7 @@ public class HttpServer{
 		}
 		else {
 			//uppdaterar session id och gissningsinfo
-			cookieContent+="Set-Cookie: sessionId="+setSessionId()+"; NumGuess="+numguess+"; Low guess="+lowguess+"; High guess="+highguess;
+			cookieContent+= "Set-Cookie: "+value+"; sessionId="+setSessionId()+"; NumGuess="+numguess+"; Low guess="+lowguess+"; High guess="+highguess;
 		}
 
 		return cookieContent;
