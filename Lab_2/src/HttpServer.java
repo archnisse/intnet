@@ -112,6 +112,7 @@ public class HttpServer{
 			}
 			if (cookie) {
 				System.out.println("The cookie is set. This user should not get a new id.");
+				System.out.println("value of cookie: " + value);
 			}else {
 				System.out.println("Could not read cookie.");
 			}
@@ -128,8 +129,12 @@ public class HttpServer{
 			if(requestedDocument.indexOf(".gif") != -1)
 				response.println("Content-Type: image/gif");
 			
-			
-			System.out.println(setCookie(numguess, lowguess, highguess, sessions, cookie, value));
+			if (!cookie) {
+				response.println("Set-Cookie: clientId="+setClientId()+"; expires=Wednesday,31-Dec-15 21:00:00 GMT");
+				response.println("Set-Cookie: sessionId="+setSessionId() + ".0.0.100");
+			} else {
+				response.println(setCookie(value));
+			}
 			response.println();
 
 			
@@ -140,7 +145,7 @@ public class HttpServer{
 				response.write(b,0,infil.read(b));
 				String debug = new String(b);
 				if (debug.equals("<split here>")) {
-					
+					System.out.println("I printed something!");
 					if (guess > 0) {
 						//response.println(answer);
 						System.out.println("Good for you.");
@@ -167,17 +172,21 @@ public class HttpServer{
 		}
 	}
 	
-	private static void assignVals(String value) {
+	private static String setCookie(String value) {
+		int lowGuess = 0, numGuess = 0, highGuess= 100, clientId = 0, sessionId = 0;
 		String[] cookies = value.split(";");
 		String cookie1 = cookies[0];
-		int clientId = Integer.parseInt(cookie1.split("=")[1]);
+		clientId = Integer.parseInt(cookie1.split("=")[1]);
 		
 		String cookie2 = cookies[1];
 		String[] Guesses = cookie2.split(":");
-		int sessionId = Integer.parseInt(Guesses[0].split("=")[1]);
-		int numGuess = Integer.parseInt(Guesses[1]);
-		int lowGuess = Integer.parseInt(Guesses[2]);
-		int highGuess = Integer.parseInt(Guesses[3]);
+		System.out.println(cookie2);
+		sessionId = Integer.parseInt(Guesses[0].split("=")[1]);
+		numGuess = Integer.parseInt(Guesses[1]);
+		lowGuess = Integer.parseInt(Guesses[2]);
+		highGuess = Integer.parseInt(Guesses[3]);
+		
+		return getStringCookie(numGuess, lowGuess, highGuess, sessionId);
 	}
 	
 	private synchronized static int setClientId() {
@@ -190,17 +199,17 @@ public class HttpServer{
 		return sessions;
 	}
 	
-	private synchronized static String setCookie(int numguess, int lowguess, int highguess, int sessions, boolean cookie, String value){
+	private synchronized static String getStringCookie(int numguess, int lowguess, int highguess, int sessions){
 		String cookieContent ="";
 		
-		if (!cookie) {
+		/*if (!cookie) {
 			//uppdaterar client id
 			cookieContent = "Set-Cookie: clientId="+setClientId()+"; expires=Wednesday,31-Dec-15 21:00:00 GMT";
 		}
-		else {
+		else {*/
 			//uppdaterar session id och gissningsinfo
-			cookieContent+= "Set-Cookie: "+value+"; sessionId="+setSessionId()+"; NumGuess="+numguess+"; Low guess="+lowguess+"; High guess="+highguess;
-		}
+			cookieContent+= "Set-Cookie: sessionId="+setSessionId()+"."+numguess+"."+lowguess+"."+highguess;
+		//}
 
 		return cookieContent;
 	}
