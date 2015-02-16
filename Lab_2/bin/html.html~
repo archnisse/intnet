@@ -13,12 +13,12 @@ form.guess.focus()
 
 <body onLoad="inputfocus(document.guessform);"> 
 
-<split here>
 
 <form name="guessform">
-<h1> Welcome to the Guessing Game! </h1>
+<h1> ~ The Guessing Game ~ </h1>
 <input type=text name=guess>
 <input type=submit value="Guess">
+<p>Guess a number between 1 and 100</p>
 </form>
 
 </body></html>

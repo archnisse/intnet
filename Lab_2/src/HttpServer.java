@@ -3,13 +3,17 @@ import java.net.*;
 import java.util.StringTokenizer; 
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class HttpServer{
 	
 	static int clients = 0;
 	static int sessions = 0;
 	static int numguess = 0;
-	static boolean cookie = false, correct = false;
+	static boolean cookie = false;
+	static boolean client = false;
+	static	boolean correct = false;
 	static ArrayList<Integer> guesses = new ArrayList<Integer>();
 	static int lowguess = 1, highguess = 100;
 	static String htmlAnswer = "";
@@ -23,11 +27,7 @@ public class HttpServer{
 		
 		
 		//Att göra:
-		//Spara klients Session ID
-		//Hantera/ta ut gissning
-		//kontrollera gissning
-		//metod för att sätta ihop html kod - se längst ner - plus att hantera intervall
-		//lösa sparning av gissningar
+
 		// Se till att flera klienter kan gissa samtidigt.
 		
 		
@@ -58,58 +58,37 @@ public class HttpServer{
 			String requestedDocument = tokens.nextToken();
 			int guess = 0;
 			try {
-				guess = Integer.parseInt(tokens.nextToken().split("=")[1]);
+				guess = Integer.valueOf(tokens.nextToken().split("=")[1]);
 			} catch (Exception e) {
 				System.err.println(e);
 			}
-			//char[] charGuess = guess.toCharArray();
-			//int guessed = checkGuess(charGuess);
-			//guess = guess.substring(6,guess.length());
-			System.out.println("guess: " + guess);
-			//System.out.println("guess length: " + guess.length() );
+
+			System.out.println("Guess: " + guess);
 			
-			int interval = 0;
-//			boolean tooHigh = false, tooLow = false;
-//			if(guess.length() > 0 && Integer.valueOf(guess)==randomNum){
-//				//System.out.println("Correct answer!");
-//				//htmlAnswer = "Correct answer!";
-//				correct = true;
-//			}
-//			if(guess.length() > 0 && Integer.valueOf(guess) < randomNum){
-//				interval=0;
-//				tooLow = true;
-//				//System.out.print("Too low, guess a new number between "+guess+" and " + String.valueOf(interval));
-//				if (lowguess < Integer.parseInt(guess)) {
-//					lowguess = Integer.parseInt(guess);
-//				} else {
-//					//Användaren gissade lägre än innan. why.
-//				}
-//			}
-//			if(Integer.valueOf(guess) > randomNum){
-//				interval=0;
-//				tooHigh = true;
-//				//System.out.print("Too high, guess a new number between " + guess + " and " + String.valueOf(interval));
-//				if (highguess > Integer.parseInt(guess)) {
-//					highguess = Integer.parseInt(guess);
-//				} else {
-//					//Användaren gissade högre än tidigare.
-//				}
-//			}
-//			String answer = setAnswer(lowguess, highguess, correct, tooHigh, tooLow);
-//			
+			
+			
 			//skriver ut info om host
 			String value = "";
 			while( (str = request.readLine()) != null && str.length() > 0) {
 				System.out.println(str);
 				String[] tmp = str.split(":");
 				if (tmp[0].equals("Cookie")) {
-					//tmp = str.substring(7);
-					//String[] tmplist = tmp.split("=");
-					//String name = tmplist[0];
+					client = true;
 					value = tmp[1];
-					cookie = true;
+					tmp = tmp[1].split(";");
+					if (tmp.length > 1) {
+						cookie = true;
+					} else {
+						cookie = false;
+					}
+				} else {
+					client = false;
 				}
 			}
+			
+			boolean[] interval = guessControl(guess, randomNum);
+			String answer = setAnswer(lowguess, highguess, correct, interval[1], interval[0]);
+			
 			if (cookie) {
 				System.out.println("The cookie is set. This user should not get a new id.");
 				System.out.println("value of cookie: " + value);
@@ -129,11 +108,14 @@ public class HttpServer{
 			if(requestedDocument.indexOf(".gif") != -1)
 				response.println("Content-Type: image/gif");
 			
-			if (!cookie) {
+			if (!client) {
 				response.println("Set-Cookie: clientId="+setClientId()+"; expires=Wednesday,31-Dec-15 21:00:00 GMT");
-				response.println("Set-Cookie: sessionId="+setSessionId() + ".0.0.100");
-			} else {
-				response.println(setCookie(value));
+				response.println("Set-Cookie: sessionId="+setSessionId() + " NumGuess=0 LowGuess=1 Highguess=100;");
+			} else if (!cookie) {
+				response.println("Set-Cookie: sessionId="+setSessionId() + " NumGuess=0 LowGuess=1 Highguess=100;");
+			} 
+			if(cookie && client){
+				response.println(setCookie(value, interval[1], interval[0], guess));
 			}
 			response.println();
 
@@ -143,17 +125,9 @@ public class HttpServer{
 			byte[] b = new byte[1024];
 			while( infil.available() > 0){
 				response.write(b,0,infil.read(b));
-				String debug = new String(b);
-				if (debug.equals("<split here>")) {
-					System.out.println("I printed something!");
-					if (guess > 0) {
-						//response.println(answer);
-						System.out.println("Good for you.");
-					} else {
-						// Här behövs ingen html?
-					}
-				}
-				//System.out.println(debug);
+				response.println(setAnswer(lowguess, highguess, correct, interval[1], interval[0]));
+
+
 			}
 
 			s.shutdownOutput();
@@ -162,31 +136,47 @@ public class HttpServer{
 	}
 	
 	private synchronized static String setAnswer(int low, int high, boolean corr, boolean tooHigh, boolean tooLow) {
-		if (corr) { // Användaren har gissat korrekt.
-			return "Correct!";
-		} else {
-			if (tooHigh) {
-				return "Too high! Guess again between "+low+" and "+high+"";
-			}
-			return "Too low! Guess again between "+low+" and " + high + "";
+
+		if (tooHigh) {
+			return "<p>Too high! Guess again between "+low+" and "+high+"</p>";
 		}
-	}
+		if(low==1 && high==100) {
+			return "<p>Guess between "+low+" and " + high + "</p>";
+		
+		}	
+		if(tooLow) {
+			return "<p>Too low! Guess again between "+low+" and " + high + "</p>";
+		}
+		
+		else {
+			return "<p>Correct</p>";
+			}
+			
+		}
 	
-	private static String setCookie(String value) {
+	
+	private static String setCookie(String value, boolean low, boolean high, int guess) {
 		int lowGuess = 0, numGuess = 0, highGuess= 100, clientId = 0, sessionId = 0;
+		boolean reset = false;
 		String[] cookies = value.split(";");
 		String cookie1 = cookies[0];
 		clientId = Integer.parseInt(cookie1.split("=")[1]);
 		
 		String cookie2 = cookies[1];
-		String[] Guesses = cookie2.split(":");
-		System.out.println(cookie2);
-		sessionId = Integer.parseInt(Guesses[0].split("=")[1]);
-		numGuess = Integer.parseInt(Guesses[1]);
-		lowGuess = Integer.parseInt(Guesses[2]);
-		highGuess = Integer.parseInt(Guesses[3]);
+		String[] Guesses = cookie2.split(" ");
+		sessionId = Integer.parseInt(Guesses[1].split("=")[1]);
+		numGuess = Integer.parseInt(Guesses[2].split("=")[1]);
+		lowGuess = Integer.parseInt(Guesses[3].split("=")[1]);
+		highGuess = Integer.parseInt(Guesses[4].split("=")[1]);
+		if (low) {
+			lowGuess = guess;
+		} else if (high) {
+			highGuess = guess;
+		} else {
+			reset = true;
+		}
 		
-		return getStringCookie(numGuess, lowGuess, highGuess, sessionId);
+		return getStringCookie(numGuess, lowGuess, highGuess, sessionId, reset);
 	}
 	
 	private synchronized static int setClientId() {
@@ -199,19 +189,50 @@ public class HttpServer{
 		return sessions;
 	}
 	
-	private synchronized static String getStringCookie(int numguess, int lowguess, int highguess, int sessions){
+	private synchronized static String getStringCookie(int numguess, int lowguess, int highguess, int sessions, boolean reset){
 		String cookieContent ="";
-		
-		/*if (!cookie) {
-			//uppdaterar client id
-			cookieContent = "Set-Cookie: clientId="+setClientId()+"; expires=Wednesday,31-Dec-15 21:00:00 GMT";
+		if (reset) {
+			cookieContent+= "Set-Cookie: sessionId="+setSessionId()+" NumGuess="+0+" LowGuess="+0+" HighGuess="+100;
+		} else {
+			cookieContent+= "Set-Cookie: sessionId="+setSessionId()+" NumGuess="+numguess+" LowGuess="+lowguess+" HighGuess="+highguess;
 		}
-		else {*/
-			//uppdaterar session id och gissningsinfo
-			cookieContent+= "Set-Cookie: sessionId="+setSessionId()+"."+numguess+"."+lowguess+"."+highguess;
-		//}
-
+		
 		return cookieContent;
+	}
+	
+	private synchronized static boolean[] guessControl(int guess, int randomNum) {
+		
+		boolean tooHigh = false, tooLow = false;
+		if(guess> 0 && guess==randomNum){
+			System.out.println("Correct answer!");
+			//htmlAnswer = "Correct answer!";
+		}
+		
+		if(guess> 0 && guess < randomNum){
+			tooLow = true;
+			System.out.print("Too low, guess a new number between "+lowguess+" and " +highguess );
+			if (lowguess <guess) {
+				lowguess = guess;
+			} else {
+				//Användaren gissade lägre än innan. why.
+			}
+		}
+		if(guess > randomNum){
+
+			tooHigh = true;
+			System.out.print("Too high, guess a new number between " + lowguess + " and " + highguess);
+			if (highguess > guess) {
+				highguess = guess;
+			} else {
+				//Användaren gissade högre än tidigare.
+			}
+		}
+		
+		boolean[] interval = new boolean[2];
+		interval[0]=tooLow;
+		interval[1]=tooHigh;
+		
+		return interval;
 	}
 	
 }
