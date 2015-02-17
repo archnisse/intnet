@@ -2,23 +2,18 @@
 
 <html>
 <head><title>Number Guess Game</title>
-<meta charset="UTF-8">
 <script type = "text/javascript">
 function inputfocus(form){
 form.guess.focus()
 }
 </script>
-
 </head>
 
 <body onLoad="inputfocus(document.guessform);"> 
-
-
+<h1>The Guessing Game</h1>
 <form name="guessform">
-<h1> ~ The Guessing Game ~ </h1>
 <input type=text name=guess>
 <input type=submit value="Guess">
-<p>Guess a number between 1 and 100</p>
 </form>
 
 </body></html>
