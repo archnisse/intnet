@@ -68,7 +68,7 @@ public class HttpServer{
 			}
 
 			System.out.println("Guess: " + guess);
-
+			System.out.println(numguess);
 			//skriver ut info om host
 			String value = "";
 			while((str = request.readLine()) != null && str.length() > 0) {
@@ -214,7 +214,7 @@ public class HttpServer{
 
 		}
 		
-		return getStringCookie(numGuess, lowGuess, highGuess, sessionId);
+		return getStringCookie(numguess, lowGuess, highGuess, sessionId);
 	}
 	
 	private synchronized static int setClientId() {
@@ -261,6 +261,7 @@ public class HttpServer{
 			lowguess=1;
 			highguess=100;
 			guess=0;
+			numguess=0;
 			System.out.println("Correct answer!");
 
 		}
@@ -268,6 +269,7 @@ public class HttpServer{
 		//gissat för lågt
 		if(guess> 0 && guess < randomNum){
 			tooLow = true;
+			numguess++;
 			System.out.print("Too low, guess a new number between "+lowguess+" and " +highguess );
 			if (lowguess <guess) {
 				lowguess = guess;
@@ -277,7 +279,7 @@ public class HttpServer{
 		}
 		//gissat för högt
 		if(guess > randomNum){
-
+			numguess++;
 			tooHigh = true;
 			System.out.print("Too high, guess a new number between " + lowguess + " and " + highguess);
 			if (highguess > guess) {
