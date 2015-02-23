@@ -1,0 +1,32 @@
+.square {
+	width: 90px;
+	height: 90px;
+	border-width: 1px;
+	border-style: solid;
+	margin-left: 0px;
+	float: left;
+	display: inline;
+	   background: #65a9d7;
+	   background: -webkit-gradient(linear, left top, left bottom, from(#3e779d), to(#65a9d7));
+	   background: -webkit-linear-gradient(center, #3e779d, #65a9d7);
+	   background: -moz-linear-gradient(center, #3e779d, #65a9d7);
+	   background: -ms-linear-gradient(center, #3e779d, #65a9d7);
+	   background: -o-linear-gradient(center, #3e779d, #65a9d7);
+}
+
+.squareBox {
+	position:relative;
+	float: left;
+	top:20px;
+	left:20px;
+}
+
+.textBox {
+	width: 100px;
+	height: 100px;
+	float: left;
+	border-style: solid;
+	border-width: 1px;
+	margin-top: 20px;
+	margin-left:20px;
+}

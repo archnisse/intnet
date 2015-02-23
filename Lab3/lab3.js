@@ -1,0 +1,19 @@
+$(document).ready(function(){
+	for (i = 1; i <= 9; i++) {
+		for (j = 1; j <= 9; j++) {
+			$("#squareBox").append("<div id="+i+";"+j+" class='square'></div>");
+		}
+		$("#squareBox").append("<div style='clear: both;'></div>");
+	}
+
+ $(".square").click(function(){
+        document.getElementById("textInBox").innerHTML = $(this).attr("id");
+	/*if ($("#textBox").attr("id")) !=0 {
+		$("#1").replaceWith(
+	}
+	 $("#textBox").append("<br>");*/
+	(this).style.background = "green";
+ });
+});
+
+	
