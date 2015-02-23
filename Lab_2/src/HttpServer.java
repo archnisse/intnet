@@ -16,7 +16,7 @@ public class HttpServer{
 //	static boolean correct = false;
 //	//static ArrayList<Integer> guesses = new ArrayList<Integer>();
 //	static int lowguess = 1, highguess = 100;
-	static int randomNum=0;
+//	static int randomNum=0;
 	
 	//################################ MAIN #############################################
 	
@@ -50,8 +50,8 @@ public class HttpServer{
 	public static void main(String[] args) throws IOException{
 		
 		//Genererar nummer första omgången
-		randomNum = generateRandomNum();
-		System.out.println(randomNum);
+		//randomNum = generateRandomNum();
+		//System.out.println(randomNum);
 	
 		
 		System.out.println("Skapar Serversocket");
@@ -60,8 +60,8 @@ public class HttpServer{
 		while(true){
 			if(reset){
 				//Genererar nummer alla nya omgångar efter första
-				randomNum = generateRandomNum();
-				System.out.println(randomNum);
+				//randomNum = generateRandomNum();
+				//System.out.println(randomNum);
 				reset=false;
 			}
 			
@@ -69,48 +69,13 @@ public class HttpServer{
 			Socket s = ss.accept();
 			System.out.println("Klient är ansluten");
 			
+			System.out.println("s.getInetAddress: " + s.getInetAddress());
+			
 			Thread t = new Thread(new Client(s));
 			t.start();
 			s = null;
 			
-//			BufferedReader request = new BufferedReader(new InputStreamReader(s.getInputStream()));
-//			String str = request.readLine();
-//			int guess = 0;
-//			
-//			StringTokenizer tokens = new StringTokenizer(str," ?");
-//			tokens.nextToken(); // Ordet GET
-//			String requestedDocument = tokens.nextToken();
-//			try {
-//				guess = Integer.valueOf(tokens.nextToken().split("=")[1]);
-//			} catch (Exception e) {
-//				System.err.println(e);
-//			}
-//
-//			//System.out.println("Guess: " + guess);
-//			//System.out.println(numguess);
-//			
-//			//Output
-//			PrintStream response = new PrintStream(s.getOutputStream());
-//			serverInfo(response, requestedDocument);
-//			System.out.println("Förfrågan klar.");
-//			s.shutdownInput();
-//
-//			
-//	
-//			//undersöker vilken typ av kakor som existerar och returnerar en sträng med eventuell kakas innehåll
-//			String value = cookieStatus(request, str);
-//			//kontrollerar gissningsinput, returnerar lista med booleans
-//			boolean[] interval = guessControl(guess);
-//			//Kollar vilken typ av kak-info som finns och sätter kakan därefter samt tar hänsyn till gissningen
-//			checkTypeOfCookie(response, interval, value, guess);	
-////			response.println()
-//			String answer = setAnswer(lowguess, highguess, correct, interval[1], interval[0], guess);
-//			//skriver rätt answer till HTML filen
-//			writeHTML(requestedDocument, response, guess, interval, answer);
-//			
-//
-//			s.shutdownOutput();
-//			s.close();
+
 		}
 	}
 	
@@ -172,31 +137,31 @@ public class HttpServer{
 		if (!client) {
 			//ClientId existerar inte (ny klient) så all typ av kak-info sätts
 			response.println("Set-Cookie: clientId="+setClientId()+"; expires=Wednesday,31-Dec-15 21:00:00 GMT");
-			response.println("Set-Cookie: sessionId="+setSessionId() + " NumGuess=0 LowGuess=1 Highguess=100;");
+			response.println("Set-Cookie: sessionId="+setSessionId() + " NumGuess=0 LowGuess=1 Highguess=100 goal="+generateRandomNum()+";");
 			return false;
 		} else if (!cookie) {
 			//clientId existerar så endast kompletterande info sätts om den inte finns
-			response.println("Set-Cookie: sessionId="+setSessionId() + " NumGuess=0 LowGuess=1 Highguess=100;");
+			response.println("Set-Cookie: sessionId="+setSessionId() + " NumGuess=0 LowGuess=1 Highguess=100 goal="+generateRandomNum()+";");
 			return false;
 		} 
 		return true;
 	}
 	
-	private synchronized static void checkTypeOfCookie(PrintStream response, boolean[] interval, String value, int guess, Boolean client, Boolean cookie, Integer highguess, Integer lowguess, Integer numguess, Integer sessionId) {
+	/*private synchronized static void checkTypeOfCookie(PrintStream response, boolean[] interval, String value, int guess, Boolean client, Boolean cookie, Integer highguess, Integer lowguess, Integer numguess, Integer sessionId) {
 		//Kollar vilken typ av kak-info som finns och sätter kakan därefter
 		if (!client) {
 			//ClientId existerar inte (ny klient) så all typ av kak-info sätts
 			response.println("Set-Cookie: clientId="+setClientId()+"; expires=Wednesday,31-Dec-15 21:00:00 GMT");
-			response.println("Set-Cookie: sessionId="+setSessionId() + " NumGuess=0 LowGuess=1 Highguess=100;");
+			response.println("Set-Cookie: sessionId="+setSessionId() + " NumGuess=0 LowGuess=1 Highguess=100 goal="+generateRandomNum()+";");
 		} else if (!cookie) {
 			//clientId existerar så endast kompletterande info sätts om den inte finns
-			response.println("Set-Cookie: sessionId="+setSessionId() + " NumGuess=0 LowGuess=1 Highguess=100;");
+			response.println("Set-Cookie: sessionId="+setSessionId() + " NumGuess=0 LowGuess=1 Highguess=100 goal="+generateRandomNum()+";");
 		} 
 		if(cookie && client){
 			//både clientId och övrig kak-info finns redan så övrig kak-info blir reset till original
 			response.println(setCookie(value, interval[0], interval[1], guess, numguess, highguess, lowguess, sessionId));
 		}
-	}
+	}*/
 	
 	private synchronized static void writeHTML(String requestedDocument, PrintStream response, int guess, boolean[] interval, String answer) throws IOException{
 		//skriver HTML koden som styr det som syns för användaren
@@ -213,30 +178,30 @@ public class HttpServer{
 	}
 
 
-	private synchronized static String setAnswer(int low, int high, boolean correct, boolean tooHigh, boolean tooLow, int guess) {
+	private synchronized static String setAnswer(Cookie cookie, boolean tooHigh, boolean tooLow, int guess) {
 		//genererar en sträng med HTML som innehåller korrekt feedback till användaren beroende på vad den gissat
 		if (tooHigh) {
-			return "<p>Too high! Guess again between "+low+" and "+high+"</p>";
+			return "<p>Too high! Guess again between "+cookie.lowguess+" and "+cookie.highguess+"</p>";
 		}
-		if(low==1 && high==100) {
+		if(cookie.lowguess==1 && cookie.highguess==100) {
 			if(guess==0){
-				return "<p>Guess between "+low+" and " + high + "</p>";
+				return "<p>Guess between "+cookie.lowguess+" and " + cookie.highguess + "</p>";
 			}
-			if(correct){
+			if(cookie.correct){
 				return "<p>Correct! Press Enter for a new guess.</p>";
 			}
 		
 		}	
 		if(tooLow) {
-			return "<p>Too low! Guess again between "+low+" and " + high + "</p>";
+			return "<p>Too low! Guess again between "+cookie.lowguess+" and " + cookie.highguess + "</p>";
 		}
 		
-		if(guess==randomNum){
+		if(guess==cookie.goal){
 			return "<p>Correct! Press Enter for a new guess.</p>";
 			}
 		
 		else{
-			return "<p>Guess again between "+low+" and " + high + "</p>";
+			return "<p>Guess again between "+ cookie.lowguess +" and " + cookie.highguess + "</p>";
 		}
 		}
 	
@@ -252,40 +217,9 @@ public class HttpServer{
 		cookie.numguess = Integer.parseInt(Guesses[2].split("=")[1]);
 		cookie.lowguess = Integer.parseInt(Guesses[3].split("=")[1]);
 		cookie.highguess = Integer.parseInt(Guesses[4].split("=")[1]);
+		cookie.goal = Integer.parseInt(Guesses[5].split("=")[1]);
 	}
 
-	private static String setCookie(String value, boolean low, boolean high, int guess, Integer numguess, Integer highguess, Integer lowguess, Integer sessionId) {
-		//Sätter kakan 
-		/*int lowGuess = 1, numGuess = 0, highGuess= 100, clientId = 0, sessionId = 0;
-		//Läser in existerande kak-info
-		String[] cookies = value.split(";");
-		String cookie1 = cookies[0];
-		clientId = Integer.parseInt(cookie1.split("=")[1]);
-		
-		String cookie2 = cookies[1];
-		String[] Guesses = cookie2.split(" ");
-		sessionId = Integer.parseInt(Guesses[1].split("=")[1]);
-		numGuess = Integer.parseInt(Guesses[2].split("=")[1]);
-		lowGuess = Integer.parseInt(Guesses[3].split("=")[1]);
-		highGuess = Integer.parseInt(Guesses[4].split("=")[1]);
-		
-		
-		
-		//uppdaterar kak-info
-		if (low) {
-			lowGuess = guess;
-		} 
-		if (high) {
-			highGuess = guess;
-		}*/ 
-		if(guess==randomNum){
-			//om användaren gissat rätt, leder till ny spelomgång
-			reset = true;
-
-		}
-		
-		return "";//getStringCookie(numguess, lowguess, highguess, sessionId);
-	}
 	
 	private synchronized static int setClientId() {
 		clients++;
@@ -304,11 +238,11 @@ public class HttpServer{
 			//om spelet börjar på nytt, allt sätts till ursprungsvärden
 			System.out.println("============= RESET ==========");
 			//correct=false;
-			cookieContent+= "Set-Cookie: sessionId="+cookie.sessionId+" NumGuess="+0+" LowGuess="+1+" HighGuess="+100;
+			cookieContent+= "Set-Cookie: sessionId="+cookie.sessionId+" NumGuess="+0+" LowGuess="+1+" HighGuess="+100+" goal="+generateRandomNum();
 			
 		} else {
 			//aktuella attributvärden
-			cookieContent+= "Set-Cookie: sessionId="+cookie.sessionId+" NumGuess="+cookie.numguess+" LowGuess="+cookie.lowguess+" HighGuess="+cookie.highguess;
+			cookieContent+= "Set-Cookie: sessionId="+cookie.sessionId+" NumGuess="+cookie.numguess+" LowGuess="+cookie.lowguess+" HighGuess="+cookie.highguess+" goal="+cookie.goal;
 		}
 		
 		return cookieContent;
@@ -326,30 +260,31 @@ public class HttpServer{
 		boolean tooHigh = false, tooLow = false;
 		
 		//om gissat rätt, allt resets
-		if(guess> 0 && guess==randomNum){
+		if(guess> 0 && guess==cookie.goal){
 			cookie.correct=true;
 			cookie.lowguess=1;
 			cookie.highguess=100;
 			guess=0;
 			cookie.numguess=0;
+			cookie.goal = generateRandomNum();
 			System.out.println("Correct answer!");
 
 		}
 		
 		//gissat för lågt
-		if(guess> 0 && guess < randomNum){
+		if(guess> 0 && guess < cookie.goal){
 			tooLow = true;
 			cookie.numguess++;
 			System.out.print("Too low, guess a new number between "+cookie.lowguess+" and " +cookie.highguess );
-			if (cookie.lowguess <guess) {
+			if (cookie.lowguess < guess) {
 				cookie.lowguess = guess;
 			} else {
 				
-				//AnvÃ€ndaren gissade lÃ€gre Ã€n innan. why.
+				//Användaren gissade lägre än innan. why.
 			}
 		}
 		//gissat för högt
-		if(guess > randomNum){
+		if(guess > cookie.goal){
 			cookie.numguess++;
 			tooHigh = true;
 			System.out.print("Too high, guess a new number between " + cookie.lowguess + " and " + cookie.highguess);
@@ -358,7 +293,7 @@ public class HttpServer{
 			} else {
 				
 				System.out.println("--------------NEIN----------------");
-				//AnvÃ€ndaren gissade hÃ¶gre Ã€n tidigare.
+				//Användaren gissade högre än tidigare.
 			}
 		}
 		
@@ -375,21 +310,13 @@ public class HttpServer{
 		int numguess, highguess, lowguess, clientId, sessionId;
 		boolean cookie, client, correct;
 		
+		int goal;
+		
 		Cookie() {
 		}
 	}
 	
 	private static class Client implements Runnable {
-		
-		//int clients = 0;
-		//int sessions = 0;
-		//int numguess = 0;
-		//Boolean cookie = new Boolean(false);
-		//Boolean client = new Boolean(false);
-		//boolean reset = false;
-		//Boolean correct = false;
-		//static ArrayList<Integer> guesses = new ArrayList<Integer>();
-		//Integer lowguess = 1, highguess = 100, clientId, sessionId;
 		
 		Cookie cookie;
 		
@@ -405,18 +332,32 @@ public class HttpServer{
 				BufferedReader request = new BufferedReader(new InputStreamReader(s.getInputStream()));
 				String str = request.readLine();
 				
-				int guess = 0;
+				int guess = -1;
 				
 				StringTokenizer tokens = new StringTokenizer(str," ?");
 				tokens.nextToken(); // Ordet GET
+				System.out.println("str: " + str);
 				String requestedDocument = tokens.nextToken();
-				try {
-					guess = Integer.valueOf(tokens.nextToken().split("=")[1]);
-				} catch (Exception e) {
-					System.err.println(e);
+				System.out.println(requestedDocument);
+				String tmp = tokens.nextToken(); 
+				if (!requestedDocument.equals("/html.html")) {
+					//Do nothing with this request.
+					System.out.println("bad request, dump.");
+					s.shutdownInput();
+					s.close();
+					return;
+				} else {
+					System.out.println("html.html, good request.");
 				}
+				try {
+					guess = Integer.valueOf(tmp.split("=")[1]);
+					System.out.println("guess: " + guess);
+				} catch (Exception e) {
+					System.err.println("erroret: " + e);
+				}
+				System.out.println("guess: " + guess);
 	
-				//System.out.println("Guess: " + guess);
+				//System.out.println("GuessguessControl: " + guess);
 				//System.out.println(numguess);
 				
 				//Output
@@ -440,11 +381,13 @@ public class HttpServer{
 					//New client with no cookie. Set default values for numguess, highguess and lowguess and get client and session id.
 					cookie.numguess = 0;
 					cookie.highguess = 100;
+					cookie.correct = false;
 					cookie.lowguess = 1;
 					cookie.clientId = setClientId();
 					cookie.sessionId = setSessionId();
+					cookie.goal = generateRandomNum();
 				}
-				
+				System.out.println("guess later: " + guess);
 				boolean[] interval = guessControl(guess, cookie);
 				//Kollar vilken typ av kak-info som finns och sätter kakan därefter samt tar hänsyn till gissningen
 				
@@ -455,7 +398,7 @@ public class HttpServer{
 				
 				//checkTypeOfCookie(response, interval, value, guess, client, cookie, highguess, lowguess, numguess, sessionId);	
 	//			response.println()
-				String answer = setAnswer(cookie.lowguess, cookie.highguess, cookie.correct, interval[1], interval[0], guess);
+				String answer = setAnswer(cookie, interval[1], interval[0], guess);
 				//skriver rätt answer till HTML filen
 				writeHTML(requestedDocument, response, guess, interval, answer);
 			} catch (Exception e) {
@@ -471,3 +414,45 @@ public class HttpServer{
 	}
 	
 }
+
+
+
+/*
+//BufferedReader request = new BufferedReader(new InputStreamReader(s.getInputStream()));
+//String str = request.readLine();
+//int guess = 0;
+//
+//StringTokenizer tokens = new StringTokenizer(str," ?");
+//tokens.nextToken(); // Ordet GET
+//String requestedDocument = tokens.nextToken();
+//try {
+//	guess = Integer.valueOf(tokens.nextToken().split("=")[1]);
+//} catch (Exception e) {
+//	System.err.println(e);
+//}
+//
+////System.out.println("Guess: " + guess);
+////System.out.println(numguess);
+//
+////Output
+//PrintStream response = new PrintStream(s.getOutputStream());
+//serverInfo(response, requestedDocument);
+//System.out.println("Förfrågan klar.");
+//s.shutdownInput();
+//
+//
+//
+////undersöker vilken typ av kakor som existerar och returnerar en sträng med eventuell kakas innehåll
+//String value = cookieStatus(request, str);
+////kontrollerar gissningsinput, returnerar lista med booleans
+//boolean[] interval = guessControl(guess);
+////Kollar vilken typ av kak-info som finns och sätter kakan därefter samt tar hänsyn till gissningen
+//checkTypeOfCookie(response, interval, value, guess);	
+////response.println()
+//String answer = setAnswer(lowguess, highguess, correct, interval[1], interval[0], guess);
+////skriver rätt answer till HTML filen
+//writeHTML(requestedDocument, response, guess, interval, answer);
+//
+//
+//s.shutdownOutput();
+//s.close();*/
