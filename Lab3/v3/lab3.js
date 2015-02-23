@@ -16,6 +16,9 @@ $(document).ready(function(){
 		$("#squareBox").append("<div style='clear: both;'></div>");
 	}
 
+ $(".switch").click(function() {
+ 	// Wooo do stuff with the grid.
+ });
  $(".square").click(function(){
 	var set = false;
 	var id = $(this).attr("id");
