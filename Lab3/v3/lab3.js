@@ -1,7 +1,12 @@
 $(document).ready(function(){
 	var chosen = [""];
-	for (i = 1; i <= 9; i++) {
-		for (j = 1; j <= 9; j++) {
+	//var grid = [];
+	
+	var size = 9;
+	
+	for (i = 1; i <= size; i++) {
+		//grid[i] = new Array(size);
+		for (j = 1; j <= size; j++) {
 			$("#squareBox").append("<div id="+i+";"+j+" class='square'></div>");
 			if (Math.random() > 0.8) {
 				chosen[chosen.length] = ""+i+";"+j+"";
