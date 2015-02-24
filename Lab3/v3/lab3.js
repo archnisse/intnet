@@ -3,6 +3,8 @@ $(document).ready(function(){
 	var size = 9;
 	var grid = new Array(size);;
 	
+	var shots = 0;
+	var hits = 0;
 	
 	for (i = 1; i <= size; i++) {
 		grid[i] = new Array(size);
@@ -16,20 +18,38 @@ $(document).ready(function(){
 		$("#squareBox").append("<div style='clear: both;'></div>");
 	}
 
- $(".switch").click(function() {
+ $("#switch").click(function() {
  	// Wooo do stuff with the grid.
+ 	var string = "textInBox";
+ 	hits = 0;
+ 	shots = 0;
+ 	document.getElementById(string).innerHTML = "Switch!";
+ 	for (i = 1; i <= size; i++) {
+		for (j = 1; j <= size; j++) {
+			var idString = ""+i+";"+j+"";
+			document.getElementById(idString).style.background = "#65a9d7";
+			if (grid[i][j].selected) {
+				grid[i][j].chosen = true;
+			} else {
+				grid[i][j].chosen = false;
+			}
+			grid[i][j].selected = false;
+		}
+	}
  });
  $(".square").click(function(){
-	var set = false;
+ 	shots = shots + 1;
 	var id = $(this).attr("id");
 	var x = id.split(";")[0];
 	var y = id.split(";")[1];
 	if (grid[x][y].chosen) {
 		(this).style.background = "red";
+		hits = hits + 1;
 	} else {
 		(this).style.background = "green";
 	}
-    document.getElementById("textInBox").innerHTML = $(this).attr("id");
+    document.getElementById("textInBox").innerHTML = $(this).attr("id") + "<br> shots: "+shots+"<br> hits: "+hits ;
+    grid[x][y].selected = true;
  });
 });
 
