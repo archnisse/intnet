@@ -3,7 +3,6 @@ $(document).ready(function(){
 	var size = 9;
 	var grid = new Array(size);;
 	var condition = 0.8;
-	
 	var shots = 0;
 	var hits = 0;
 	
@@ -44,13 +43,29 @@ $(document).ready(function(){
 	var y = id.split(";")[1];
 	if (grid[x][y].chosen) {
 		(this).style.background = "red";
-		hits = hits + 1;
+		if (grid[x][y].selected==false) {
+				hits = hits+1;
+		}
+		
+
 	} else {
 		(this).style.background = "green";
+		
+
 	}
+	
+
+    
     document.getElementById("textInBox").innerHTML = $(this).attr("id") + "<br> shots: "+shots+"<br> hits: "+hits ;
+
     grid[x][y].selected = true;
+    return false;
  });
+
+
+
+
+
 });
 
 	
