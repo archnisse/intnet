@@ -22,6 +22,7 @@ $(document).ready(function(){
  	// Wooo do stuff with the grid.
  	var string = "textInBox";
  	shots = 0;
+ 	hits = 0;
  	document.getElementById(string).innerHTML = "Switch!";
  	for (i = 1; i <= size; i++) {
 		for (j = 1; j <= size; j++) {
