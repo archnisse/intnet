@@ -1,0 +1,16 @@
+<?php
+
+$DBServer = "mysql-vt2015.csc.kth.se";
+$DBUser = 'viktorbjadmin';
+$DBPass = 'Ogm7axfJ';
+$DBName = 'viktorbj';
+
+$conn = new mysqli($DBServer, $DBUser, $DBPass, $DBName);
+
+$conn -> set_charset("utf8");
+
+if($conn->connect_error){
+	trigger_error('Database connection failed: ' .$conn->connect_error, E_USER_ERROR);
+}
+
+?>
