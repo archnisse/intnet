@@ -37,6 +37,7 @@ $(document).ready(function(){
 		}
 	}
  });
+ 
  $(".square").click(function(){
  	shots = shots + 1;
 	var id = $(this).attr("id");
