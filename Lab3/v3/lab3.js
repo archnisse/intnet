@@ -11,9 +11,9 @@ $(document).ready(function(){
 		for (j = 1; j <= size; j++) {
 			$("#squareBox").append("<div id="+i+";"+j+" class='square'></div>");
 			grid[i][j] = {chosen: false, selected: false};
-			//if (Math.random() > condition) {
-			//	grid[i][j].chosen = true;
-			//}
+			if (Math.random() > condition) {
+				grid[i][j].chosen = true;
+			}
 		}
 		$("#squareBox").append("<div style='clear: both;'></div>");
 	}
