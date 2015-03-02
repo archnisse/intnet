@@ -3,7 +3,6 @@ $(document).ready(function(){
 	var size = 9;
 	var grid = new Array(size);;
 	var condition = 0.8;
-	
 	var shots = 0;
 	var hits = 0;
 	
@@ -12,9 +11,9 @@ $(document).ready(function(){
 		for (j = 1; j <= size; j++) {
 			$("#squareBox").append("<div id="+i+";"+j+" class='square'></div>");
 			grid[i][j] = {chosen: false, selected: false};
-			if (Math.random() > condition) {
-				grid[i][j].chosen = true;
-			}
+			//if (Math.random() > condition) {
+			//	grid[i][j].chosen = true;
+			//}
 		}
 		$("#squareBox").append("<div style='clear: both;'></div>");
 	}
@@ -23,6 +22,7 @@ $(document).ready(function(){
  	// Wooo do stuff with the grid.
  	var string = "textInBox";
  	shots = 0;
+ 	hits = 0;
  	document.getElementById(string).innerHTML = "Switch!";
  	for (i = 1; i <= size; i++) {
 		for (j = 1; j <= size; j++) {
@@ -37,6 +37,7 @@ $(document).ready(function(){
 		}
 	}
  });
+ 
  $(".square").click(function(){
  	shots = shots + 1;
 	var id = $(this).attr("id");
@@ -44,13 +45,29 @@ $(document).ready(function(){
 	var y = id.split(";")[1];
 	if (grid[x][y].chosen) {
 		(this).style.background = "red";
-		hits = hits + 1;
+		if (grid[x][y].selected==false) {
+				hits = hits+1;
+		}
+		
+
 	} else {
 		(this).style.background = "green";
+		
+
 	}
+	
+
+    
     document.getElementById("textInBox").innerHTML = $(this).attr("id") + "<br> shots: "+shots+"<br> hits: "+hits ;
+
     grid[x][y].selected = true;
+    return false;
  });
+
+
+
+
+
 });
 
 	
