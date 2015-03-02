@@ -45,7 +45,7 @@ $(document).ready(function(){
 	var y = id.split(";")[1];
 	if (grid[x][y].chosen) {
 		(this).style.background = "red";
-		if (grid[x][y].selected==false) {
+		if (!grid[x][y].selected) {
 				hits = hits+1;
 		}
 		
