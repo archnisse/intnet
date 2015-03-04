@@ -22,6 +22,9 @@ if(!isset($_COOKIE[$cookie_name])) {
     $cookieValue = explode(";", $cookieValue);
     $cookieLan = $cookieValue[0];
     $cookieTyp = $cookieValue[1];
+    $cookiePrice = $cookieValue[2];
+    $cookieRoom = $cookieValue[3];
+    $cookieArea = $cookieValue[4];
 }
 ?>
 
@@ -69,8 +72,18 @@ if(!isset($_COOKIE[$cookie_name])) {
 	  
 	?>
 	</select>
-
+	<br>
+	Högsta pris:
+	<input type='text' name='maxprice' value=<?echo("'".$cookiePrice."'");?>>
+	<br>
+	Antal rum:
+	<input type='text' name='numrooms' value=<?echo("'".$cookieRoom."'");?>>
+	<br>
+	Min. area:
+	<input type='text' name='minarea' value=<?echo("'".$cookieArea."'");?>>
+	
 	<!-- Submit button, leads to result page-->
+	<br>
 	<input type='submit' value='Visa'>
 </form>
 
