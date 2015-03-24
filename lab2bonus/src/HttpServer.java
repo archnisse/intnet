@@ -86,7 +86,7 @@ public class HttpServer{
 		
 		String value = "";
 		while((str = request.readLine()) != null && str.length() > 0) {
-			System.out.println(str);
+			System.out.println("str: " + str);
 			String[] tmp = str.split(":");
 			//Kollar om kaka finns
 			if (tmp[0].equals("Cookie")) {
