@@ -16,7 +16,9 @@ public class HttpClient{
 		int guess = 0;
 		Cookie cookie = new Cookie();
 		
-		int stahp = 0;
+		int guesses = 0;
+		int correctGuesses = 0;
+		int limit = 10;
 		
 		while(!correct) {
 			String strGuess = "";
@@ -44,10 +46,10 @@ public class HttpClient{
 			con.connect();
 			Map<String, List<String>> resp = con.getHeaderFields();
 			List<String> cookies = resp.get("Set-Cookie");
-			System.out.println("The cookies:");
-			System.out.println(" cookie1: " + cookies.get(0));
-			System.out.println(" cookie2: " + cookies.get(1));
-			String frstCookie = cookies.get(0);
+			//System.out.println("The cookies:");
+			//System.out.println(" cookie1: " + cookies.get(0));
+			//System.out.println(" cookie2: " + cookies.get(1));
+			//String frstCookie = cookies.get(0);
 			for (int i = 0; i < cookies.size(); i++) {
 				System.out.println("Beginning to loop through cookie");
 				String entireCookie = cookies.get(i);
@@ -64,9 +66,21 @@ public class HttpClient{
 					cookie.sesid = Integer.parseInt(recievedCookie[0].split("=")[1]);
 					int nmguess = Integer.parseInt(recievedCookie[1].split("=")[1]);
 					if (nmguess < cookie.numGuess) {
-						System.out.println("Guess wass correct.");
-						correct = true;
-						continue;
+						System.out.println();
+						System.out.println("================");
+						System.out.println("Guess wass correct!");
+						System.out.println("Guessed for: " + guess);
+						System.out.println("Number of guesses needed: " + guesses);
+						System.out.println("================");
+						System.out.println();
+						guesses = 0;
+						Thread.sleep(700);
+						correctGuesses++;
+						if (correctGuesses >= limit) {
+							correct = true;
+						}
+						guess = 0;
+						//continue;
 					} else {
 						System.out.println("The guess was not correct. retrying.");
 						cookie.numGuess = nmguess;
@@ -104,11 +118,7 @@ public class HttpClient{
 			guess = cookie.low + ((cookie.high - cookie.low)/2);
 			System.out.println("Guessing for: " + guess);
 			con.disconnect();
-			stahp++;
-			if (stahp > 1) {
-				correct = true;
-			}
-			Thread.sleep(500);
+			guesses++;
 		}
 		System.out.println("Outside of while loop, terminating.");
 		/*

@@ -99,12 +99,15 @@ public class HttpServer{
 				if (tmp.length > 1) {
 					cookie.cookie = true;
 					System.out.println("Entire cookie is set");
+					System.out.println("client: " + cookie.client);
 				} else {
 					cookie.cookie = false;
+					System.out.println("cookie set to false in cookieStatus.");
 				}
-			} else {
+			} /*else {
 				cookie.client = false;
-			}
+				System.out.println("client set to false in cookieStatus.");
+			}*/
 		}
 		//Baserat på undersökningen ovan skrivs det ut information om kakans status
 		if (cookie.cookie) {
