@@ -1,0 +1,11 @@
+<html>
+<body>
+<jsp:useBean class="bean.DiceBean" id="db"
+scope="session">
+<jsp:setProperty name ="db" property="field" value="0">
+</jsp:useBean>
+<h1>Värde på field: <jsp:getProperty name="db" property="field"/></h1>
+
+<h1>Nytt värde på field: <jsp:getProperty name="db" property="field"/></h1>
+</body>
+</html>
