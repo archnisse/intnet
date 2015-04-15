@@ -1,98 +1,108 @@
 $(document).ready(function(){
 	
-	var size = 9;
+	var size = 10;
 	var grid = new Array(size);
 	var condition = 0.8;
 	var shots = 0;
 	var hits = 0;
 	var ships = new Array(2,3,3,4,5);
 	
-	for (i = 1; i <= size; i++) {
-		grid[i] = new Array(size);
-		for (j = 1; j <= size; j++) {
-			$("#squareBox").append("<div id="+i+";"+j+" class='square'></div>");
-			grid[i][j] = {chosen: false, selected: false};
+	var createGrid = function(){ // Skapar en spelplan
+		for (i = 1; i <= size; i++) {
+			grid[i] = new Array(size);
+			for (j = 1; j <= size; j++) {
+				$("#squareBox").append("<div id="+i+";"+j+" class='square'></div>");
+				grid[i][j] = {chosen: false, selected: false};
+			}
+			$("#squareBox").append("<div style='clear: both;'></div>");
 		}
-		$("#squareBox").append("<div style='clear: both;'></div>");
 	}
-
-	//måste vara 1 ruta emellan
-	// Array med 5 skepp
-		//1 med längd 5
-		//2 med längd 3
-		//1 med längd 2
-		//1 med längd 4
 	
-	for(i=0; i<5; i++) {
-		//slumpa riktning. om 1 gå i y-led, om 0 gå i x-led
+	var generateRandom = function(){ // Slumpar riktning och startposition
 		var direction = Math.round(Math.random());
-		document.getElementById("textInBox").innerHTML = $(this).attr("direction");
+		console.log("DIR: "+direction);
 		//slumpa startposition
-		var x0 = Math.round(Math.random()*(9-1)+1);
-		var y0 = Math.round(Math.random()*(9-1)+1);
+		var x0 = Math.round(Math.random()*(10-1)+1);
+		var y0 = Math.round(Math.random()*(10-1)+1);
+		console.log("y0, x0 "+y0,x0);
 
-		//#######################################################################
-		//NÅGOT FEL (?) MED slumpningen av y0, x0
-		//måste hantera när man får 1 eller 9, kan inte kolla bakåt och framåt då
-		//Lyckas sätta ut godtyckligt antal skepp ibland
-		//#######################################################################
+		return [direction, x0, y0];
+	}
 
-		//vandra skeppets längd i slumpade riktningen
-		//x-led (betecknas av y0 pga hur grid görs)
-		if(direction==0 && grid[x0][y0].chosen==false) {
-			//Kolla kors varje ruta innan chosen sätts false/true
-			//behöver bara kolla bakåt i första rutan, om okej stega framåt
-			if(grid[y0-1][x0].chosen==false) {
-				for(j=1; j<=ships[i]; j++) {
-					//kolla framåt, vänster och höger
-					if(grid[y0+1][x0].chosen==false && grid[y0][x0+1].chosen==false && grid[y0][x0-1].chosen==false) {
-						grid[y0][x0].chosen=true;
-						y0++
-					} else {
-						//Börja om från början med samma skepp, eller alla?
-					}
-				}
-			}
-		}
-	
-	//y-led, betecknas av x0
-	} if(direction==1 && grid[y0][x0].chosen==false) {
-			//Kolla kors varje ruta innan chosen sätts false/true
-			//behöver bara kolla bakåt i första rutan, om okej stega framåt
-			if(grid[y0][x0-1].chosen=false) {
-				for(j=1; j<=ships[i]; j++) {
-					//kolla framåt, vänster och höger
-					if(grid[y0][x0+1].chosen==false && grid[y0+1][x0].chosen==false && grid[y0-1][x0].chosen==false) {
-						grid[y0][x0].chosen=true;
-						x0++
-					} else {
-						//Börja om från början med samma skepp, eller alla?
-					}
-				}
-			}
-		}
 	
 
-/* $("#switch").click(function() {
- 	// Wooo do stuff with the grid.
- 	var string = "textInBox";
- 	shots = 0;
- 	hits = 0;
- 	document.getElementById(string).innerHTML = "Switch!";
+	var checkLength = function(x0, y0, direction, shipLength) { //Kollar om skeppet får plats utifrån x0,y0
+		var endCoordinate
+		if(direction==0) {
+			endCoordinate = y0+shipLength;
+			console.log("END y0: "+endCoordinate);
+		} else if (direction==1) {
+			endCoordinate= x0+shipLength;
+			console.log("END x0: "+endCoordinate);
+		}
 
- 	for (i = 1; i <= size; i++) {
-		for (j = 1; j <= size; j++) {
-			var idString = ""+i+";"+j+"";
-			document.getElementById(idString).style.background = "#65a9d7";
-			if (grid[i][j].selected) {
-				grid[i][j].chosen = true;
-			} else {
-				grid[i][j].chosen = false;
-			}
-			grid[i][j].selected = false;
+		if(endCoordinate<=10) {
+				return true;
+		} else {
+				return false
 		}
 	}
- });*/
+
+	var placeShips = function() { //Placerar skeppen
+
+		for(i=0; i<5; i++) {
+			console.log("NYTT SKEPP nr "+i);
+			placeringOK = false;
+			while(!placeringOK) {
+				//slumpa riktning. om 1 gå i y-led, om 0 gå i x-led
+				var random = generateRandom();
+				var direction = random[0];
+				var x0 = random[1];
+				var y0 = random[2];
+
+				// kontrollera om skepp får plats inom grid utifrån sin startposition
+				var shipLength = ships[i];
+				console.log("Längdkontroll: "+checkLength(x0, y0, direction, shipLength));
+				if(checkLength(x0, y0, direction, shipLength)) { 
+					//vandra skeppets längd i slumpade riktningen
+					//x-led (betecknas av y0 pga hur grid görs)
+					if(direction==0 && grid[x0][y0].chosen==false) {
+						//behöver bara kolla bakåt i första rutan, om okej stega framåt
+						if(grid[y0-1][x0].chosen==false || y0==1) {
+							for(j=1; j<=ships[i]; j++) {
+								//kolla framåt, vänster och höger
+								if(grid[y0+1][x0].chosen==false && grid[y0][x0+1].chosen==false && grid[y0][x0-1].chosen==false) {
+									grid[y0][x0].chosen=true;
+									y0++;
+								} else {
+									//om fail sätt till false
+									console.log("Kunde inte placera skepp");
+									//Börja om från början med samma skepp, eller alla?
+								}
+							}
+						}
+					} else if(direction==1 && grid[y0][x0].chosen==false) {
+						//behöver bara kolla bakåt i första rutan, om okej stega framåt
+						if(grid[y0][x0-1].chosen=false || x0==1) {
+							for(j=1; j<=ships[i]; j++) {
+								//kolla framåt, vänster och höger
+								if(grid[y0][x0+1].chosen==false && grid[y0+1][x0].chosen==false && grid[y0-1][x0].chosen==false) {
+									grid[y0][x0].chosen=true;
+									x0++;
+								} else {
+									console.log("Kunde inte placera skepp");
+									//Börja om från början med samma skepp, eller alla?
+								}
+							}
+						}
+					}
+
+					placeringOK=true;
+					console.log("Placerade skepp " + i);
+				}
+			}
+		}
+	
  
  $(".square").click(function(){
  	shots = shots + 1;
@@ -100,31 +110,23 @@ $(document).ready(function(){
 	var x = id.split(";")[0];
 	var y = id.split(";")[1];
 	
-
-
-
 	if (grid[x][y].chosen) {
 		(this).style.background = "red";
 		if (grid[x][y].selected==false) {
 				hits = hits+1;
 		}
-		
-
 	} else {
 		(this).style.background = "green";
-		
-
 	}
-	
     document.getElementById("textInBox").innerHTML = $(this).attr("id") + "<br> shots: "+shots+"<br> hits: "+hits ;
-
     grid[x][y].selected = true;
     return false;
  });
+}
 
 
-
-
+createGrid();
+placeShips();
 
 
 });
