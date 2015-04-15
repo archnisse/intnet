@@ -26,9 +26,17 @@ $(document).ready(function(){
 	for(i=0; i<5; i++) {
 		//slumpa riktning. om 1 gå i y-led, om 0 gå i x-led
 		var direction = Math.round(Math.random());
+		document.getElementById("textInBox").innerHTML = $(this).attr("direction");
 		//slumpa startposition
 		var x0 = Math.round(Math.random()*(9-1)+1);
 		var y0 = Math.round(Math.random()*(9-1)+1);
+
+		//#######################################################################
+		//NÅGOT FEL (?) MED slumpningen av y0, x0
+		//måste hantera när man får 1 eller 9, kan inte kolla bakåt och framåt då
+		//Lyckas sätta ut godtyckligt antal skepp ibland
+		//#######################################################################
+
 		//vandra skeppets längd i slumpade riktningen
 		//x-led (betecknas av y0 pga hur grid görs)
 		if(direction==0 && grid[x0][y0].chosen==false) {
