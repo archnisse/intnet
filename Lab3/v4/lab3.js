@@ -27,21 +27,43 @@ $(document).ready(function(){
 		//slumpa riktning. om 1 gå i y-led, om 0 gå i x-led
 		var direction = Math.round(Math.random());
 		//slumpa startposition
-		var xorigin = Math.round(Math.random()*(9-1)+1);
-		var yorigin = Math.round(Math.random()*(9-1)+1);
+		var x0 = Math.round(Math.random()*(9-1)+1);
+		var y0 = Math.round(Math.random()*(9-1)+1);
 		//vandra skeppets längd i slumpade riktningen
-		if(direction==0) {
-			for(j=1; j<=ships[i]; j++) {
-				//Kolla kors varje ruta innan chosen sätts false/true
-				grid[yorigin][xorigin+j].chosen=true;
+		//x-led (betecknas av y0 pga hur grid görs)
+		if(direction==0 && grid[x0][y0].chosen=false]) {
+			//Kolla kors varje ruta innan chosen sätts false/true
+			//behöver bara kolla bakåt i första rutan, om okej stega framåt
+			if(grid[y0-1][x0].chosen=false) {
+				for(j=1; j<=ships[i]; j++) {
+					//kolla framåt, vänster och höger
+					if(grid[y0+1][x0].chosen=false && grid[y0][x0+1].chosen=false && grid[y0][x0-1].chosen=false) {
+						grid[y0][x0].chosen=true;
+						y0++
+					} else {
+						//Börja om från början med samma skepp, eller alla?
+					}
+				}
 			}
-		} else {
-			for(j=1; j<=ships[i]; j++) {
-				grid[yorigin+j][xorigin].chosen=true;
+		}
+	
+	//y-led, betecknas av x0
+	} if(direction==1 && grid[y0][x0].chosen=false]) {
+			//Kolla kors varje ruta innan chosen sätts false/true
+			//behöver bara kolla bakåt i första rutan, om okej stega framåt
+			if(grid[y0][x0-1].chosen=false) {
+				for(j=1; j<=ships[i]; j++) {
+					//kolla framåt, vänster och höger
+					if(grid[y0][x0+1].chosen=false && grid[y0+1][x0].chosen=false && grid[y0-1][x0].chosen=false) {
+						grid[y0][x0].chosen=true;
+						x0++
+					} else {
+						//Börja om från början med samma skepp, eller alla?
+					}
+				}
 			}
 		}
 	}
-		//för varje ruta: kolla vänster, uppåt, nedåt, högerr
 
 
 
