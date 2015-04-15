@@ -31,13 +31,13 @@ $(document).ready(function(){
 		var y0 = Math.round(Math.random()*(9-1)+1);
 		//vandra skeppets längd i slumpade riktningen
 		//x-led (betecknas av y0 pga hur grid görs)
-		if(direction==0 && grid[x0][y0].chosen=false]) {
+		if(direction==0 && grid[x0][y0].chosen==false) {
 			//Kolla kors varje ruta innan chosen sätts false/true
 			//behöver bara kolla bakåt i första rutan, om okej stega framåt
-			if(grid[y0-1][x0].chosen=false) {
+			if(grid[y0-1][x0].chosen==false) {
 				for(j=1; j<=ships[i]; j++) {
 					//kolla framåt, vänster och höger
-					if(grid[y0+1][x0].chosen=false && grid[y0][x0+1].chosen=false && grid[y0][x0-1].chosen=false) {
+					if(grid[y0+1][x0].chosen==false && grid[y0][x0+1].chosen==false && grid[y0][x0-1].chosen==false) {
 						grid[y0][x0].chosen=true;
 						y0++
 					} else {
@@ -48,13 +48,13 @@ $(document).ready(function(){
 		}
 	
 	//y-led, betecknas av x0
-	} if(direction==1 && grid[y0][x0].chosen=false]) {
+	} if(direction==1 && grid[y0][x0].chosen==false) {
 			//Kolla kors varje ruta innan chosen sätts false/true
 			//behöver bara kolla bakåt i första rutan, om okej stega framåt
 			if(grid[y0][x0-1].chosen=false) {
 				for(j=1; j<=ships[i]; j++) {
 					//kolla framåt, vänster och höger
-					if(grid[y0][x0+1].chosen=false && grid[y0+1][x0].chosen=false && grid[y0-1][x0].chosen=false) {
+					if(grid[y0][x0+1].chosen==false && grid[y0+1][x0].chosen==false && grid[y0-1][x0].chosen==false) {
 						grid[y0][x0].chosen=true;
 						x0++
 					} else {
@@ -63,15 +63,7 @@ $(document).ready(function(){
 				}
 			}
 		}
-	}
-
-
-
-
-
-
-
-		
+	
 
 /* $("#switch").click(function() {
  	// Wooo do stuff with the grid.
