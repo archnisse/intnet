@@ -26,6 +26,8 @@ $(document).ready(function(){
 		var y0 = Math.round(Math.random()*(10-1)+1);
 		console.log("y0, x0 "+y0,x0);
 
+
+
 		return [direction, x0, y0];
 	}
 
@@ -48,6 +50,19 @@ $(document).ready(function(){
 		}
 	}
 
+	var checkXY = function(x0,y0) { //Kollar om y0 och x0 är 1
+		var y = y0-1;
+		var x = x0-1;
+		if(x==0) {
+			x=1;
+		} 
+		if(y==0) {
+			y=1;
+		}
+
+		return [x, y]
+	}
+
 	var placeShips = function() { //Placerar skeppen
 
 		for(i=0; i<5; i++) {
@@ -59,7 +74,10 @@ $(document).ready(function(){
 				var direction = random[0];
 				var x0 = random[1];
 				var y0 = random[2];
-
+				var conditionXY = checkXY(x0, y0);
+				var x = conditionXY[0];
+				var y = conditionXY[1];
+				
 				// kontrollera om skepp får plats inom grid utifrån sin startposition
 				var shipLength = ships[i];
 				console.log("Längdkontroll: "+checkLength(x0, y0, direction, shipLength));
@@ -68,10 +86,10 @@ $(document).ready(function(){
 					//x-led (betecknas av y0 pga hur grid görs)
 					if(direction==0 && grid[x0][y0].chosen==false) {
 						//behöver bara kolla bakåt i första rutan, om okej stega framåt
-						if(grid[y0-1][x0].chosen==false || y0==1) {
+						if(grid[y0][x].chosen==false) {
 							for(j=1; j<=ships[i]; j++) {
 								//kolla framåt, vänster och höger
-								if(grid[y0+1][x0].chosen==false && grid[y0][x0+1].chosen==false && grid[y0][x0-1].chosen==false) {
+								if(grid[y0+1][x0].chosen==false && grid[y0][x0+1].chosen==false && grid[y0][x].chosen==false) {
 									grid[y0][x0].chosen=true;
 									y0++;
 								} else {
@@ -81,12 +99,13 @@ $(document).ready(function(){
 								}
 							}
 						}
+					//y-led (betecknas av x0 pga hur grid görs)
 					} else if(direction==1 && grid[y0][x0].chosen==false) {
 						//behöver bara kolla bakåt i första rutan, om okej stega framåt
-						if(grid[y0][x0-1].chosen=false || x0==1) {
+						if(grid[y][x0].chosen=false) {
 							for(j=1; j<=ships[i]; j++) {
 								//kolla framåt, vänster och höger
-								if(grid[y0][x0+1].chosen==false && grid[y0+1][x0].chosen==false && grid[y0-1][x0].chosen==false) {
+								if(grid[y0][x0+1].chosen==false && grid[y0+1][x0].chosen==false && grid[y][x0].chosen==false) {
 									grid[y0][x0].chosen=true;
 									x0++;
 								} else {
@@ -99,6 +118,7 @@ $(document).ready(function(){
 
 					placeringOK=true;
 					console.log("Placerade skepp " + i);
+					console.log("-----------------------------------");
 				}
 			}
 		}
