@@ -36,7 +36,7 @@ $(document).ready(function(){
 	var checkLength = function(x0, y0, direction, shipLength) { //Kollar om skeppet får plats utifrån x0,y0
 		var endCoordinate
 		if(direction==0) {
-			endCoordinate = y0+shipLength;
+			endCoordinate = (y0+shipLength)-1;
 			console.log("END y0, x0: "+endCoordinate+" "+x0);
 		} else if (direction==1) {
 			endCoordinate= x0+(shipLength-1);
@@ -46,7 +46,7 @@ $(document).ready(function(){
 		if(endCoordinate<=10) {
 				return true;
 		} else {
-				return false
+				return false;
 		}
 	}
 
@@ -59,10 +59,10 @@ $(document).ready(function(){
 		} 
 		if(y==0) {
 			y=1;
-			console.log("check y: "+y)
+			console.log("check y: "+y);
 		}
 
-		return [x, y]
+		return [x, y];
 	}
 
 	var placeShips = function() { //Placerar skeppen
@@ -88,7 +88,7 @@ $(document).ready(function(){
 				if(checkLength(x0, y0, direction, shipLength)) { 
 					//vandra skeppets längd i slumpade riktningen
 					//x-led (betecknas av y0 pga hur grid görs)
-					for(j=1; j<=ships[i]; j++) {
+					for(j=1; j<=shipLength; j++) {
 					if(direction==0 && grid[y0][x0].chosen==false) {
 						//behöver bara kolla bakåt i första rutan, om okej stega framåt
 						console.log("DIR 0 y, x "+y0,x0);
