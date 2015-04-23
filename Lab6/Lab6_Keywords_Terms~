@@ -1,0 +1,45 @@
+SSLSocket - Secure Sockets Layer Socket
+
+JSSE - Java secure socket extension. PKI in java gives jSSE
+
+PKI - Public key infrastructure: Authentication, encrypting, hash 
+
+X.509 - An ITU-T standard for a PKI and privilige management infrastructure (PMI). It specifies standard formats for PKI, certification revocation lists, attribute certificates and certification path validation algorithm.
+
+TLS - Transport Layer Security protocol. Lies between the transport layer and the application layer. Does not specify encryption algorithms. One method that embeds PKI in general.
+
+SSL - Secure sockets layer protocol uses a combination of cryptographic processes to provide a secure connection over a network. Enhances TCP/IP protocols. SSL is added between the transport layer and the application layer in the standard TCP/IP protocol stack. Useful because 1) cannot be sure that the entity you are communication with is really who you think it is, 2) network data can be intercepted and 3) if an attacker can intercept the data it may be able to corrupt the data before sending it on to the receiver. Method: 1) Authentication, 2) Provides encrypted connection between the parties, 3) the encryption algorithms include a secure hash function similar to checksum which ensure that the transmitted data is not modified.
+
+RSA - Authentication and key exchange.
+
+
+Private Key - 
+
+Public Key -
+ 
+CIPHER SUITE - A combination of cryptographic parameters that define the security
+algorithms and key sizes used for authentication, key agreement, encryption and integrity protection.
+
+HTTPS - Hyper text transfer protocal secure, uses port 443.
+
+MD5/SHA - 
+
+
+----------- Questions ---------------
+
+1. Is it safe to store the certificate password in the code? Why/Why not?
+
+2. Explain how the PKI work.
+
+3. Explain the handshake.
+
+
+
+
+4. How are root certificates delivered to your computer?
+A root certificate is an unsigned public key certificate that is part of the PKI scheme. Most common variety is based on X.509 standard. 
+
+5. When is symmetric encryption used?
+For large amounts of data since it is fast, one key for all.
+
+6. When is asymmetric encryption used?
