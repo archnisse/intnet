@@ -13,7 +13,7 @@ $(document).ready(function(){
 			grid.push([]);
 			for (column=0;column<size;column++){
 				grid[row].push({chosen: false, selected: false, coords: {row: row, col: column}});
-				$("#squareBox").append("<div id=row:"+row+";col:"+column+" class='square'></div>");
+				$("#squareBox").append("<div id="+row+";"+column+" class='square'></div>");
 			}
 			$("#squareBox").append("<div style='clear: both;'></div>");
 		}
@@ -74,87 +74,109 @@ $(document).ready(function(){
 
 	var placeShips = function() {
 		for (ship in ships){
-			var startPosition = generateRandom(); // Generera startposition
-			var shipLength = ships[ship];
-			var startX = startPosition[1];
-			var startY = startPosition[2];
-			var okSquares = [];
-			if(checkLength(startPosition, ship)){ // Kolla om skeppet kommer gå utanför spelplanen
-				// skeppet går innanför, yaaay, ella är sötast
-				if (startPosition[0]===0){ // Om horisontell
-					// Utför kontroll om något ligger på rutorna redan
-					for (i=0;i<shipLength;i++){
-						console.log("Längd: "+shipLength+" Provar ruta: "+(startX+i)+"; "+startY);
-						//spara ok rutors koordinater i en array, om array.size == shiplength - sätt alla koordinater till chosen och nollställ array
-						if(grid[startX+i][startY].chosen){
-							// om rutan är tagen
-							// slumpa ny startposition
-							
-							okSquares.length=0;
-						} else{
-							// rutan är ledig, sparar rutans koordinater i en array
-							var x = startX+i;
-							okSquares.push(x);
-							console.log("OK SQUARE X: "+x);
-							//om alla rutor som kollas är okej så sätts de till true
-							if(okSquares.length==shipLength) {
-								for(i=0;i<shipLength;i++) {
-									x = okSquares[i];
-									grid[x][startY].chosen=true;
-
-								}
+			var placeShipOK = false;
+			while (placeShipOK != true) {
+				var startPosition = generateRandom(); // Generera startposition
+				var shipLength = ships[ship];
+				var startX = startPosition[1];
+				var startY = startPosition[2];
+				var okSquares = [];
+				
+			
+				if(checkLength(startPosition, ship)){ // Kolla om skeppet kommer gå utanför spelplanen
+					// skeppet går innanför, yaaay, ella är sötast
+					if (startPosition[0]===0){ // Om horisontell
+						// Utför kontroll om något ligger på rutorna redan
+						for (i=0;i<shipLength;i++){
+							console.log("Längd: "+shipLength+" Provar ruta: "+(startX+i)+"; "+startY);
+							//spara ok rutors koordinater i en array, om array.size == shiplength - sätt alla koordinater till chosen och nollställ array
+							if(grid[startX+i][startY].chosen){
+								// om rutan är tagen
+								// slumpa ny startposition
+								console.log("----------------------------------------");
+								console.log("Skepp nr "+ship+" gick utanför spelplanen");
+								console.log("----------------------------------------");
 								okSquares.length=0;
+								
+							} else{
+								// rutan är ledig, sparar rutans koordinater i en array
+								var x = startX+i;
+								okSquares.push(x);
+								console.log("OK SQUARE X: "+x);
+								//om alla rutor som kollas är okej så sätts de till true
+								if(okSquares.length==shipLength) {
+									for(i=0;i<shipLength;i++) {
+										x = okSquares[i];
+										grid[x][startY].chosen=true;
+
+									}
+									console.log("----------------------------------------");
+									console.log("SKEPP "+ship+" PLACERAT");
+									console.log("----------------------------------------");
+									okSquares.length=0;
+									placeShipOK=true;
+								}
+								// gå vidare till nästa ruta
 							}
-							// gå vidare till nästa ruta
 						}
+					} else if(startPosition[0]===1){ // Vertikal
+						// Utför kontroll om något ligger på rutorna redan
+						for (i=0;i<shipLength;i++){
+							console.log("Längd: "+shipLength+" Provar ruta: "+(startX)+"; "+(startY+i));
+							//console.log(grid[startX][startY+i].chosen);
+
+							if(grid[startX][startY+i].chosen){
+								// om rutan är tagen
+								// slumpa ny startposition
+								console.log("----------------------------------------");
+								console.log("Skepp nr "+ship+" gick utanför spelplanen");
+								console.log("----------------------------------------");
+								okSquares.length=0;
+								
+							} else{
+								// rutan är ledig, sparar rutans koordinater i en array
+								var y= startY+i;
+								okSquares.push(y);
+								console.log("OK SQUARE Y: "+y);
+								//om alla rutor som kollas är okej så sätts de till true
+								if(okSquares.length==shipLength) {
+									for(i=0;i<shipLength;i++) {
+										y = okSquares[i];
+										grid[startX][y].chosen=true;
+
+									}
+									console.log("----------------------------------------");
+									console.log("SKEPP "+ship+" PLACERAT");
+									console.log("----------------------------------------");
+									okSquares.length=0;
+									placeShipOK=true;
+								}
+
+								// gå vidare till nästa ruta
+							}
+						} 
 					}
-				} else{ // Vertikal
-					// Utför kontroll om något ligger på rutorna redan
-					for (i=0;i<shipLength;i++){
-						console.log("Längd: "+shipLength+" Provar ruta: "+(startX)+"; "+(startY+i));
-						console.log(grid[startX][startY+i].chosen);
-
-						if(grid[startX][startY+i].chosen){
-							// om rutan är tagen
-							// slumpa ny startposition
-							
-							okSquares.length=0;
-						} else{
-							// rutan är ledig, sparar rutans koordinater i en array
-							var y= startY+i;
-							okSquares.push(y);
-							console.log("OK SQUARE Y: "+y);
-							//om alla rutor som kollas är okej så sätts de till true
-							if(okSquares.length==shipLength) {
-								for(i=0;i<shipLength;i++) {
-									y = okSquares[i];
-									grid[startX][y].chosen=true;
-
-								}
-								okSquares.length=0;
-							}
-							// gå vidare till nästa ruta
-						}
-					} 
-				}
-			} else{
-				console.log("Skepp nr "+ship+" gick utanför spelplanen")
+				} /*else{
+					console.log("Skepp nr "+ship+" gick utanför spelplanen")
 				// skeppet går utanför spelplanen
 				// slumpa om ny startposition
+			}*/
 			}
 		}
-	};
+	}
 	
  
- $(".square").click(function(){
+ $(document).on("click", ".square", function(){
+ 	//console.log("click");
  	shots = shots + 1;
 	var id = $(this).attr("id");
-	var x = id.split(";")[1];
-	var y = id.split(";")[0];
-	
+	var x = id.split(";")[0]; //row
+	var y = id.split(";")[1]; //col
+	//console.log("x "+x+" "+"y "+y);
+	//console.log(grid[x][y].chosen);
 	if (grid[x][y].chosen) {
 		(this).style.background = "red";
-		if (grid[y][x].selected==false) {
+		if (grid[x][y].selected==false) {
 				hits = hits+1;
 		}
 	} else {
@@ -178,6 +200,9 @@ $(document).ready(function(){
 
 var grid = createGrid();
 placeShips();
+
+
+
 
 
 });
