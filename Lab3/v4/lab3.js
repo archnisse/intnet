@@ -34,7 +34,7 @@ $(document).ready(function(){
 	
 
 	var checkLength = function(x0, y0, direction, shipLength) { //Kollar om skeppet får plats utifrån x0,y0
-		var endCoordinate
+		var endCoordinate;
 		if(direction==0) {
 			endCoordinate = (y0+shipLength)-1;
 			console.log("END y0, x0: "+endCoordinate+" "+x0);
@@ -44,9 +44,9 @@ $(document).ready(function(){
 		}
 
 		if(endCoordinate<=10) {
-				return true;
+			return true;
 		} else {
-				return false;
+			return false;
 		}
 	}
 
@@ -85,51 +85,53 @@ $(document).ready(function(){
 				var shipLength = ships[i];
 				console.log("Längdkontroll: "+checkLength(x0, y0, direction, shipLength));
 				
-				if(checkLength(x0, y0, direction, shipLength)) { 
+				if(checkLength(x0, y0, direction, shipLength)) {
 					//vandra skeppets längd i slumpade riktningen
 					//x-led (betecknas av y0 pga hur grid görs)
-					for(j=1; j<=shipLength; j++) {
-					if(direction==0 && grid[y0][x0].chosen==false) {
-						//behöver bara kolla bakåt i första rutan, om okej stega framåt
-						console.log("DIR 0 y, x "+y0,x0);
-						if(grid[y0][x].chosen==false) {
-							
+						if(direction==0 && grid[y0][x0].chosen==false) {
+							//behöver bara kolla bakåt i första rutan, om okej stega framåt
+							console.log("DIR 0 y, x "+y0,x0);
+							if(grid[y0][x].chosen==false) {
+								for(j=1; j<=shipLength; j++) {
 								//kolla framåt, vänster och höger
-								if(grid[y0+1][x0].chosen==false && grid[y0][x0+1].chosen==false && grid[y0][x].chosen==false) {
-									grid[y0][x0].chosen=true;
-									console.log("chosen "+grid[y0][x0].chosen);
-									y0++;
-								} else {
-									//om fail sätt till false
-									placeShips();
-									console.log("Kunde inte placera skepp");
-									//Börja om från början med samma skepp, eller alla?
-								}
+									if(grid[y0+1][x0].chosen==false && grid[y0][x0+1].chosen==false && grid[y0][x0-1].chosen==false) {
+										grid[y0][x0].chosen=true;
+										console.log("chosen "+grid[y0][x0].chosen);
+										y0++;
+									} else {
+										//om fail sätt till false
+										placeShips();
+										console.log("Kunde inte placera skepp");
+										//Börja om från början med samma skepp, eller alla?
+									}
 							}
 						}
-					//y-led (betecknas av x0 pga hur grid görs)
-					 else if(direction==1 && grid[y0][x0].chosen==false) {
-						//behöver bara kolla bakåt i första rutan, om okej stega framåt
-						if(grid[y][x0].chosen=false) {
-							for(j=1; j<=ships[i]; j++) {
-								//kolla framåt, vänster och höger
-								if(grid[y0][x0+1].chosen==false && grid[y0+1][x0].chosen==false && grid[y][x0].chosen==false) {
-									grid[y0][x0].chosen=true;
-									console.log("chosen "+grid[y0][x0].chosen);
-									x0++;
-								} else {
-									placeShips();
-									console.log("Kunde inte placera skepp");
-									//Börja om från början med samma skepp, eller alla?
+
+						//y-led (betecknas av x0 pga hur grid görs)
+						 else if(direction==1 && grid[y0][x0].chosen==false) {
+							//behöver bara kolla bakåt i första rutan, om okej stega framåt
+							if(grid[y][x0].chosen=false) {
+								for(j=1; j<=ships[i]; j++) {
+									//kolla framåt, vänster och höger
+									if(grid[y0][x0+1].chosen==false && grid[y0+1][x0].chosen==false && grid[y0-1][x0].chosen==false) {
+										grid[y0][x0].chosen=true;
+										console.log("chosen "+grid[y0][x0].chosen);
+										x0++;
+									} else {
+										placeShips();
+										console.log("Kunde inte placera skepp");
+										//Börja om från början med samma skepp, eller alla?
+									}
 								}
 							}
 						}
 					}
-				}
 
 					placeringOK=true;
 					console.log("Placerade skepp " + i);
 					console.log("-----------------------------------");
+				} else {
+					console.log("Skeppet går utanför spelplanen.");
 				}
 			
 			}
