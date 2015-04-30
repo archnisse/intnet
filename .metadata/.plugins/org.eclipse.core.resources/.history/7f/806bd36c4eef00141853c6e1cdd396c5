@@ -17,10 +17,9 @@ import javax.net.ssl.SSLSocket;
 	
 	//Create a certificate with the help of a keytool
 		//skapar server.cer med keytool i terminalen
-		//---------------OBS
-		//-------------- Måste stoppa server.cer i keystore? vad är keystore?-----------
+		//---- Måste stoppa server.cer i keystore? vad är keystore?
 		//server.cer måste läggas in i klienten som godkänd/secure (firefox browser)
-			//Inställningar > Avancerat >Certifikat > Servrar > Importera
+		//Inställningar > Avancerat >Certifikat > Servrar > Importera
 	
 	
 	
@@ -38,7 +37,6 @@ import javax.net.ssl.SSLSocket;
 //	8.Create an OutputStream object to write data back to clients.
 
 //Source: https://www.owasp.org/index.php/Using_the_Java_Secure_Socket_Extensions#The_JSSE_Implementation_of_SSL
-//Står bra om handskaket i länken ovan oxå
 
 
 
