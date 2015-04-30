@@ -1,114 +1,82 @@
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocket;
 
-import com.sun.net.ssl.SSLContext;
-import com.sun.net.ssl.TrustManager;
-import com.sun.net.ssl.TrustManagerFactory;
 
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
+
 
 	
 	// TO DO
-	//Create an encrypted connection
+	
 	//Create a certificate with the help of a keytool
-	//Create a server that waits for an encrypted connection
-	//Server only needs to send hello world over the connection to prove itself
-	//When connection established - acts like normal sockets
+		//skapar server.cer via script i terminalen
+		//server.cer mÂste l‰ggas in i klienten som godk‰nd/secure (firefox browser)
+		//Inst‰llningar > Avancerat >Certifikat > Servrar > Importera
+	
+	
+	
 	//must use sslsockets
 	//connect with browser after accepting self-signed certificate
+
+//Algorithm for creating SSL Server socket
+//	1.Register the JSSE provider
+//	2.Set System property for keystore by specifying the keystore which contains the server certificate
+//	3.Set System property for the password of the keystore which contains the server certificate
+//	4.Create an instance of SSLServerSocketFactory
+//	5.Create an instance of SSLServerSocket by specifying the port to which the SSL Server socket needs to bind with
+//	6.Initialize an object of SSLSocket
+//	7.Create InputStream object to read data sent by clients
+//	8.Create an OutputStream object to write data back to clients.
+
+//Source: https://www.owasp.org/index.php/Using_the_Java_Secure_Socket_Extensions#The_JSSE_Implementation_of_SSL
+
+
 
 
 public class Server {
 	
-	public static void main(String[] args) throws NoSuchAlgorithmException, CertificateException, FileNotFoundException, IOException, KeyStoreException {
+	public static void main(String[] args) throws FileNotFoundException, IOException {
 		
-		try {
-			InputStream infil = new FileInputStream("server.cer");
-			CertificateFactory cf = CertificateFactory.getInstance("X.509");
-			X509Certificate cert = (X509Certificate)cf.generateCertificate(infil);
-			infil.close();
-		} catch(CertificateException e1){
-			System.err.println(e1.getMessage());
-		} catch(IOException e2){
-			System.err.println(e2.getMessage());
-		}
-
-		KeyStore ks = null;
-		try {
-			ks = KeyStore.getInstance("JKS", "SUN");
-		} catch(KeyStoreException e3){
-			System.out.println(e3.getMessage());
-		} catch(NoSuchProviderException e4){
-			System.out.println(e4.getMessage());
-		}
-
-		InputStream is = null;
-		try {
-			is = new FileInputStream(new File("/.keystore"));
-		} catch(FileNotFoundException e5){
-			System.out.println(e5.getMessage());
-		}
-
-		try {
-			ks.load(is,"rootroot".toCharArray()); // rootroot kanske m√•ste vara batman
-		} catch(IOException e6){
-			System.out.println(e6.getMessage());
-		} catch(NoSuchAlgorithmException e7){
-			System.out.println(e7.getMessage());
-		} catch(CertificateException e8){
-			System.out.println(e8.getMessage());
-		}
 		
-		TrustManagerFactory tmf = TrustManagerFactory.getInstance("SUNX509");
-		tmf.init(ks);
 		
-		SSLContext ctxt = SSLContext.getInstance("TLS");
-		TrustManager[] tm = tmf.getTrustManagers();
-		try {
-			ctxt.init(null, tm, null);
-		} catch (KeyManagementException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		SSLServerSocketFactory ssf = ctxt.getServerSocketFactory();
-		System.out.println("St√∂der:");
-		for(int i=0; i<ssf.getSupportedCipherSuites().length; i++) {
-		    System.out.println(ssf.getSupportedCipherSuites()[i]);
-		}
-		SSLServerSocket ss = null;
 		try{
-			ss = (SSLServerSocket)ssf.createServerSocket(1235);
-			String[] cipher = ss.getSupportedCipherSuites();//{"SSL_DH_anon_WITH_RC4_128_MD5"};
-			ss.setEnabledCipherSuites(cipher);
-			System.out.println("VALD:");
-			for(int i=0; i<ss.getEnabledCipherSuites().length; i++) {
-				System.out.println(ss.getEnabledCipherSuites()[i]);
+			//Create an encrypted connection, a secure connection
+			//mÂste stoppa keystore i r‰tt directory: home/?
+			//setProperty sets the system property indicated by the specified key
+			//det ‰r h‰r handskaket sker?
+			System.setProperty("javax.net.ssl.keyStore", "/.keystore");
+	        System.setProperty("javax.net.ssl.keyStorePassword", "batman");
+	        //getDefault returns the default SSL server socket factory
+			SSLServerSocketFactory ssf = (SSLServerSocketFactory)SSLServerSocketFactory.getDefault();
+			System.out.println("OK; factory succesful");
+			//Create a server that waits for an encrypted connection
+			//Returns a server socket bound to the specified  port
+			SSLServerSocket ss = (SSLServerSocket)ssf.createServerSocket(1235);
+			
+			//Connect with client
+			while(true) {
+				
+				SSLSocket s = (SSLSocket)ss.accept();
+				//When connection established - acts like normal sockets
+				System.out.println("We have landed on the moon!");
+				
+				BufferedReader infil = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                PrintWriter out = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
+                //Server only needs to send hello world over the connection to prove itself
+                out.write("Hello World");
+                s.shutdownOutput ();
 			}
-			SSLSocket s = (SSLSocket)ss.accept();
-			BufferedReader infil = new BufferedReader(new InputStreamReader(s.getInputStream()));
-			String rad = null;
-			while((rad=infil.readLine())!=null) {
-				System.out.println(rad);
-			}
+			
 		} catch(IOException e) {
-			System.out.println("Uh oh.. "+e.getMessage());
+			//System.out.println("Uh oh.. "+e.getMessage());
+			e.printStackTrace();
 		}
 	}
 

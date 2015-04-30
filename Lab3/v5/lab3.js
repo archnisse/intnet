@@ -50,6 +50,10 @@ $(document).ready(function(){
 			} else {
 				plusOne = endCoordinate+1;
 			}
+
+
+//Kolla oxå om diagonalt bakåt är OK
+
 			// console.log("Slut: "+endCoordinate+" "+startY);
 			if(endCoordinate<10 && !grid[plusOne][startY].chosen) {
 				return true;
@@ -66,6 +70,9 @@ $(document).ready(function(){
 			} else {
 				plusOne = endCoordinate+1;
 			}
+
+//Kolla oxå om diagonalt bakåt är OK
+
 			// console.log("Slut: "+startX+" "+endCoordinate);
 			if(endCoordinate<10 && !grid[startX][plusOne].chosen) {
 				return true;
@@ -75,7 +82,7 @@ $(document).ready(function(){
 
 		}
 
-		//Kolla oxå om length+1 rutan är tagen
+		
 
 
 		
@@ -104,9 +111,14 @@ $(document).ready(function(){
 				var startXminus=startX-1;
 			}
 
-			return [startXminus, startYminus, 0, startYplus];
 
-		} else {
+			//Hantera gränsfall vid diagonal koll
+
+
+
+			return [startXminus, startYminus, 0, startYplus, XdiagPlus, xdiagMinus];
+
+		} else { //Vertikal
 			// Hantera gränsfallen 0 och 9 för X
 			if(startX===9) {
 				var startXplus=9;
@@ -167,7 +179,8 @@ $(document).ready(function(){
 							for (i=0;i<shipLength;i++){
 								console.log("Längd: "+shipLength+" Provar ruta: "+(startX+i)+"; "+startY);
 								//kolla runtomkring
-								if(grid[startX+i][startY].chosen || grid[startX+i][startYminus].chosen || grid[startX+i][startYplus].chosen){
+								if(grid[startX+i][startY].chosen || grid[startX+i][startYminus].chosen || grid[startX+i][startYplus].chosen
+									|| grid[startX+i+1][startYplus].chosen || grid[startX+i+1][startYminus].chosen) {
 									// om rutan är tagen
 									// slumpa ny startposition
 									console.log("----------------------------------------");
@@ -210,7 +223,8 @@ $(document).ready(function(){
 								console.log("Längd: "+shipLength+" Provar ruta: "+(startX)+"; "+(startY+i));
 								//console.log(grid[startX][startY+i].chosen);
 								//console.log("startY: " + startY + " startXminus: " +startXminus + " startXplus: "+startXplus);
-								if(grid[startX][startY+i].chosen || grid[startXminus][startY+i].chosen ||grid[startXplus][startY+i].chosen){
+								if(grid[startX][startY+i].chosen || grid[startXminus][startY+i].chosen ||grid[startXplus][startY+i].chosen
+									|| grid[startXplus][startY+i+1].chosen || grid[startXminus][startY+i+1].chosen){
 									// om rutan är tagen
 									// slumpa ny startposition
 									console.log("----------------------------------------");
@@ -264,7 +278,7 @@ $(document).ready(function(){
 				hits = hits+1;
 		}
 	} else {
-		(this).style.background = "green";
+		(this).style.background = "#87CEFA";
 	}
 
 
