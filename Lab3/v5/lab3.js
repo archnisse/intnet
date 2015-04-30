@@ -57,7 +57,7 @@ $(document).ready(function(){
 		}
 	}
 
-	var checkXY = function(x0,y0) { //Kollar om y0 och x0 är 1
+	/*var checkXY = function(x0,y0) { //Kollar om y0 och x0 är 1
 		var y = y0-1;
 		var x = x0-1;
 		if(x==0) {
@@ -70,7 +70,7 @@ $(document).ready(function(){
 		}
 
 		return [x, y];
-	}
+	}*/
 
 	var placeShips = function() {
 		for (ship in ships){
@@ -87,10 +87,21 @@ $(document).ready(function(){
 					// skeppet går innanför, yaaay, ella är sötast
 					if (startPosition[0]===0){ // Om horisontell
 						// Utför kontroll om något ligger på rutorna redan
+						if(startY===9) {
+								var startYplus=9;
+							} else if(startY===0) {
+								var startYminus=0;
+							} else {
+								var startYplus=startY+1;
+								var startYminus=startY-1;
+							}
+
 						for (i=0;i<shipLength;i++){
 							console.log("Längd: "+shipLength+" Provar ruta: "+(startX+i)+"; "+startY);
 							//spara ok rutors koordinater i en array, om array.size == shiplength - sätt alla koordinater till chosen och nollställ array
-							if(grid[startX+i][startY].chosen){
+							
+
+							if(grid[startX+i][startY].chosen || grid[startX][startYminus].chosen || grid[startX][startYplus].chosen){
 								// om rutan är tagen
 								// slumpa ny startposition
 								console.log("----------------------------------------");
@@ -121,11 +132,20 @@ $(document).ready(function(){
 						}
 					} else if(startPosition[0]===1){ // Vertikal
 						// Utför kontroll om något ligger på rutorna redan
+						if(startX===9) {
+								var startXplus=9;
+							} else if(startX===0) {
+								var startXminus=0;
+							} else {
+								var startXplus=startY+1;
+								var startXminus=startY-1;
+							}
+
 						for (i=0;i<shipLength;i++){
 							console.log("Längd: "+shipLength+" Provar ruta: "+(startX)+"; "+(startY+i));
 							//console.log(grid[startX][startY+i].chosen);
-
-							if(grid[startX][startY+i].chosen){
+						
+							if(grid[startX][startY+i].chosen || grid[startXminus][startY].chosen ||grid[startXplus][startY].chosen){
 								// om rutan är tagen
 								// slumpa ny startposition
 								console.log("----------------------------------------");
@@ -138,6 +158,7 @@ $(document).ready(function(){
 								var y= startY+i;
 								okSquares.push(y);
 								console.log("OK SQUARE Y: "+y);
+								
 								//om alla rutor som kollas är okej så sätts de till true
 								if(okSquares.length==shipLength) {
 									for(i=0;i<shipLength;i++) {
