@@ -72,6 +72,7 @@ $(document).ready(function(){
 		return [x, y];
 	}*/
 
+
 	var placeShips = function() {
 		for (ship in ships){
 			var placeShipOK = false;
@@ -89,9 +90,11 @@ $(document).ready(function(){
 						// Utför kontroll om något ligger på rutorna redan
 						if(startY===9) {
 								var startYplus=9;
+								var startYminus=startY-1;
 							} else if(startY===0) {
 								var startYminus=0;
-							} else {
+								var startYplus=startY+1;
+							} else if(startY<9 && startY>0){
 								var startYplus=startY+1;
 								var startYminus=startY-1;
 							}
@@ -100,8 +103,8 @@ $(document).ready(function(){
 							console.log("Längd: "+shipLength+" Provar ruta: "+(startX+i)+"; "+startY);
 							//spara ok rutors koordinater i en array, om array.size == shiplength - sätt alla koordinater till chosen och nollställ array
 							
-
-							if(grid[startX+i][startY].chosen || grid[startX][startYminus].chosen || grid[startX][startYplus].chosen){
+							//console.log("startX: " + startX + " startYminus: " +startYminus + " startYplus: "+startYplus);
+							if(grid[startX+i][startY].chosen || grid[startX+i][startYminus].chosen || grid[startX+i][startYplus].chosen){
 								// om rutan är tagen
 								// slumpa ny startposition
 								console.log("----------------------------------------");
@@ -134,18 +137,21 @@ $(document).ready(function(){
 						// Utför kontroll om något ligger på rutorna redan
 						if(startX===9) {
 								var startXplus=9;
+								var startXminus=startX-1;
+							
 							} else if(startX===0) {
+								var startXplus=startX+1;
 								var startXminus=0;
-							} else {
-								var startXplus=startY+1;
-								var startXminus=startY-1;
+							} else if(startX<9 && startX>0){
+								var startXplus=startX+1;
+								var startXminus=startX-1;
 							}
 
 						for (i=0;i<shipLength;i++){
 							console.log("Längd: "+shipLength+" Provar ruta: "+(startX)+"; "+(startY+i));
 							//console.log(grid[startX][startY+i].chosen);
-						
-							if(grid[startX][startY+i].chosen || grid[startXminus][startY].chosen ||grid[startXplus][startY].chosen){
+							//console.log("startY: " + startY + " startXminus: " +startXminus + " startXplus: "+startXplus);
+							if(grid[startX][startY+i].chosen || grid[startXminus][startY+i].chosen ||grid[startXplus][startY+i].chosen){
 								// om rutan är tagen
 								// slumpa ny startposition
 								console.log("----------------------------------------");
