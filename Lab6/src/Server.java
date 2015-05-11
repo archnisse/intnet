@@ -18,9 +18,9 @@ import javax.net.ssl.SSLSocket;
 	//Create a certificate with the help of a keytool
 		//skapar server.cer med keytool i terminalen
 		//---------------OBS
-		//-------------- Måste stoppa server.cer i keystore? vad är keystore?-----------
-		//server.cer måste läggas in i klienten som godkänd/secure (firefox browser)
-			//Inställningar > Avancerat >Certifikat > Servrar > Importera
+		//-------------- Mï¿½ste stoppa server.cer i keystore? vad ï¿½r keystore?-----------
+		//server.cer mï¿½ste lï¿½ggas in i klienten som godkï¿½nd/secure (firefox browser)
+			//Instï¿½llningar > Avancerat >Certifikat > Servrar > Importera
 	
 	
 	
@@ -38,7 +38,7 @@ import javax.net.ssl.SSLSocket;
 //	8.Create an OutputStream object to write data back to clients.
 
 //Source: https://www.owasp.org/index.php/Using_the_Java_Secure_Socket_Extensions#The_JSSE_Implementation_of_SSL
-//Står bra om handskaket i länken ovan oxå
+//Stï¿½r bra om handskaket i lï¿½nken ovan oxï¿½
 
 
 
@@ -47,13 +47,13 @@ public class Server {
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		
-		
+
 		
 		try{
 			//Create an encrypted connection, a secure connection
-			//måste stoppa keystore i rätt directory: home/?
+			//mÃ¥ste stoppa keystore i rï¿½tt directory: home/?
 			//setProperty sets the system property indicated by the specified key
-			//det är här handskaket sker?
+			//det ï¿½r hï¿½r handskaket sker?
 			System.setProperty("javax.net.ssl.keyStore", "/.keystore");
 	        System.setProperty("javax.net.ssl.keyStorePassword", "batman");
 	        //getDefault returns the default SSL server socket factory

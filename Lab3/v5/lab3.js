@@ -116,7 +116,7 @@ $(document).ready(function(){
 
 
 
-			return [startXminus, startYminus, 0, startYplus, XdiagPlus, xdiagMinus];
+			return [startXminus, startYminus, 0, startYplus];
 
 		} else { //Vertikal
 			// Hantera gränsfallen 0 och 9 för X
@@ -179,8 +179,7 @@ $(document).ready(function(){
 							for (i=0;i<shipLength;i++){
 								console.log("Längd: "+shipLength+" Provar ruta: "+(startX+i)+"; "+startY);
 								//kolla runtomkring
-								if(grid[startX+i][startY].chosen || grid[startX+i][startYminus].chosen || grid[startX+i][startYplus].chosen
-									|| grid[startX+i+1][startYplus].chosen || grid[startX+i+1][startYminus].chosen) {
+								if(grid[startX+i][startY].chosen || grid[startX+i][startYminus].chosen || grid[startX+i][startYplus].chosen) {
 									// om rutan är tagen
 									// slumpa ny startposition
 									console.log("----------------------------------------");
@@ -223,8 +222,7 @@ $(document).ready(function(){
 								console.log("Längd: "+shipLength+" Provar ruta: "+(startX)+"; "+(startY+i));
 								//console.log(grid[startX][startY+i].chosen);
 								//console.log("startY: " + startY + " startXminus: " +startXminus + " startXplus: "+startXplus);
-								if(grid[startX][startY+i].chosen || grid[startXminus][startY+i].chosen ||grid[startXplus][startY+i].chosen
-									|| grid[startXplus][startY+i+1].chosen || grid[startXminus][startY+i+1].chosen){
+								if(grid[startX][startY+i].chosen || grid[startXminus][startY+i].chosen ||grid[startXplus][startY+i].chosen){
 									// om rutan är tagen
 									// slumpa ny startposition
 									console.log("----------------------------------------");
