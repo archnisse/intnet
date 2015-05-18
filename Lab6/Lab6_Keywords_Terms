@@ -13,33 +13,79 @@ SSL - Secure sockets layer protocol uses a combination of cryptographic processe
 RSA - Authentication and key exchange.
 
 
-Private Key - 
+Private Key - is kept private by one of the communicators
 
-Public Key -
+Public Key - Can be sent openly through the network
  
 CIPHER SUITE - A combination of cryptographic parameters that define the security
 algorithms and key sizes used for authentication, key agreement, encryption and integrity protection.
 
 HTTPS - Hyper text transfer protocal secure, uses port 443.
 
-MD5/SHA - 
+MD5- The MD5 message-digest algorithm is a widely used cryptographic hash function producing a 128-bit (16-byte) hash value, typically expressed in text format as a 32 digit hexadecimal number. MD5 has been utilized in a wide variety of cryptographic applications, and is also commonly used to verify data integrity.
+
+SHA - stands for "secure hash algorithm". Cryptographic hash function, "impossible to recreate the input data from its hash value alone."
 
 
 ----------- Questions ---------------
 
+#########################################################################
 1. Is it safe to store the certificate password in the code? Why/Why not?
+#########################################################################
+No. Too easy to access. Should not be written anywhere, should instead be input from somewhere.
 
-2. Explain how the PKI work.
 
+#########################################################################
+2. Explain how the PKI work. 
+#########################################################################
+PKI relies on certificates. They are a form of identification that has been authorised or vetted against a trustworthy Certification Authority (CA). When you apply for a certificate you provide information (IP Address, Location, Common Name, Organisational Unit etc) about the domain or server that you are interested in identifying. CA runs some checks against your business to check that you are who you say you are and if all is well, generates you your new certificate and signs it with their root or intermediate certificate. CA generates you a private key and public certificate 
+
+The server has a private / public key pair. This are usually .key and .crt files respectively.
+The public Key is used to encrypt data.
+The private key can decrypt any data encrypted by the associated public key.
+The public key also consists of a digital fingerprint identifying the server.
+Asymmetric keys are used to provide a secure (encrypted) way of sending the symmetric keys to each other. Also known as the handshake.
+Asymmetric keys can be used for data encryption but symmetric keys are far more efficient and are the preferred way to encrypt / decrypt data once the handshake has been established.
+
+
+
+#########################################################################
 3. Explain the handshake.
+#########################################################################
+The negotiation phase during which the two socket peers agree to use a new or existing session. The handshake protocol is a series of messages exchanged over the record protocol. At the end of the handshake, new connection-specific encryption and integrity protection keys are generated based on the key agreement secrets in the session.
+
+-Agrees on the highest version of SSL that both client and server support.
+-The server sends the client a certificate or a certificate chain
+-The client generates information used to create a key to use for symmetric encryption. For RSA, the client then encrypts this key information with the server's public key and sends it to the server
+-The client sends a message telling the server to change to encrypted mode.
+-The server tells the client that it is ready for secure data communication to begin. This is the end of the SSL handshake.
+
+"Handshake - exchanging keys basically"
 
 
-
-
+#########################################################################
 4. How are root certificates delivered to your computer?
-A root certificate is an unsigned public key certificate that is part of the PKI scheme. Most common variety is based on X.509 standard. 
+#########################################################################
+A root certificate is an unsigned public key certificate that is part of the PKI scheme. Most common variety is based on X.509 standard. They are distributed by 
+the admin of the browser.
 
+
+#########################################################################
 5. When is symmetric encryption used?
-For large amounts of data since it is fast, one key for all.
+#########################################################################
+For large amounts of data since it is fast, one key for all. It is a shared secret
+- everyone has to get the same key.
 
+With secret key cryptography, data can be encrypted and decrypted quickly, but because both communicating parties must share the same secret key information, the logistics of exchanging the key can be a problem.
+
+#########################################################################
 6. When is asymmetric encryption used?
+#########################################################################
+
+Public key cryptography is also called asymmetric cryptography because different keys are used to encrypt and decrypt the data. A well known public key cryptographic algorithm often used with SSL is the Rivest Shamir Adleman (RSA) algorithm.
+
+With public key cryptography, key exchange is not a problem because the public key does not need to be kept secret, but the algorithms used to encrypt and decrypt data require extensive computations, and are therefore very slow.
+
+
+
+
