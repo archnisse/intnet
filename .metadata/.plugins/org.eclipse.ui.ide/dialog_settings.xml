@@ -5,6 +5,8 @@
 		<item value="false" key="WizardProjectsImportPage.STORE_COPY_PROJECT_ID"/>
 		<item value="false" key="WizardProjectsImportPage.STORE_NESTED_PROJECTS"/>
 		<list key="WizardProjectsImportPage.STORE_DIRECTORIES">
+			<item value="/home/nisse/Dropbox/skola/kex/ModernElevatorSim"/>
+			<item value="/home/nisse/Dropbox/skola/intnet/gitten/projectserver"/>
 			<item value="C:\Users\Ella\Documents\GitHub\intnet"/>
 			<item value="C:\Users\Ella\Documents\GitHub\intnet\Lab_2"/>
 		</list>
