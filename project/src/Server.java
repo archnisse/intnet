@@ -153,8 +153,14 @@ public class Server {
     private int cookieHandler(HttpExchange t) {
     	Headers head = t.getRequestHeaders();
     	//Set<String> set = head.keySet();
-    	List<String> cookie = head.get("Cookie");
-    	for (String s : cookie) {
+    	List<String> cookie_field = head.get("Cookie");
+    	StringBuilder sb = new StringBuilder();
+    	for (int i = 0;  i < cookie_field.size(); i++) {
+    		sb.append(cookie_field.get(i));
+    	}
+    	String cookie = sb.toString();
+    	String[] cookies = cookie.split(";");
+    	for (String s : cookies) {
     		System.out.println("Cookie: " + s);
     		if (s.contains("server")) {
     			System.out.println("Cookie contained server");
@@ -162,28 +168,28 @@ public class Server {
     			switch (server) {
         			case login :
         				System.out.println("Login set in cookie, run login code");
-        				login(cookie, head);
+        				login(cookies, head);
         				break;
         			case listComp :
         				System.out.println("Listcomp set in cookie, run listcomp code");
-        				listComp(cookie, head);
+        				listComp(cookies, head);
         				break;
         			case viewComp :
         				System.out.println("viewcomp set in cookie, run viewcomp code");
-        				viewComp(cookie, head);
+        				viewComp(cookies, head);
         				break;
         			case bookmark :
         				System.out.println("bookmark set in cookie, run bookmark code");
-        				bookmark(cookie, head);
+        				bookmark(cookies, head);
         				break;
         			case newUser :
-        				newUser(cookie, head);
+        				newUser(cookies, head);
         				break;
         			case newComp :
-        				newComp(cookie, head);
+        				newComp(cookies, head);
         				break;
         			case removeComp :
-        				removeComp(cookie, head);
+        				removeComp(cookies, head);
         				break;
     			}
     			// No reason to look at further cookies
@@ -198,7 +204,7 @@ public class Server {
      * @param cookie, read the cookie fields
      * @return 0 on success, -1 on failure.
      */
-    private int login(List<String> cookie, Headers header) {
+    private int login(String[] cookie, Headers header) {
     	SQLiteConnection db;
     	String uname = "", pword = "";
     	db = openDatabase(path);
@@ -254,7 +260,7 @@ public class Server {
      * @param header, header for the response
      * @return 0 on success, -1 on error.
      */
-    private int listComp(List<String> cookie, Headers header) {
+    private int listComp(String[] cookie, Headers header) {
     	SQLiteConnection db;
     	String prefix = "";
         List<String> values = new ArrayList<String>();
@@ -297,7 +303,7 @@ public class Server {
      * @param header
      * @return
      */
-    private int viewComp(List<String> cookie, Headers header) {
+    private int viewComp(String[] cookie, Headers header) {
     	SQLiteConnection db;
     	int cid = -1;
         List<String> values = new ArrayList<String>();
@@ -343,7 +349,7 @@ public class Server {
     	}
     }
     
-    private int bookmark(List<String> cookie, Headers header) {
+    private int bookmark(String[] cookie, Headers header) {
     	SQLiteConnection db;
     	int uid = -1, cid = -1;
     	String uname = "", prefix = "";
@@ -402,7 +408,7 @@ public class Server {
     	}
     }
     
-    private int newUser(List<String> cookie, Headers header) {
+    private int newUser(String[] cookie, Headers header) {
     	SQLiteConnection db;
     	String uname = "", pword = "";
     	db = openDatabase(path);
@@ -444,7 +450,7 @@ public class Server {
     	}
     }
     
-    private int newComp(List<String> cookie, Headers header) {
+    private int newComp(String[] cookie, Headers header) {
     	SQLiteConnection db;
     	db = openDatabase(path);
 		SQLiteStatement st = null;
@@ -485,7 +491,7 @@ public class Server {
     	}
     }
     
-    private int removeComp(List<String> cookie, Headers header) {
+    private int removeComp(String[] cookie, Headers header) {
     	SQLiteConnection db;
     	db = openDatabase(path);
     	int cid = -1;
