@@ -528,7 +528,9 @@ public class Server {
     	}
     }
     
+    // TODO: Remove companies from bookmarks
     
+    // TODO: Filter companies by type
 
     private class OtherHandler implements HttpHandler {
         public void handle(HttpExchange t) throws IOException {
