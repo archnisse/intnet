@@ -108,9 +108,11 @@ public class Server {
 			if(newDB) {
 				System.out.println("Creating new DB");
 				db.exec("BEGIN TRANSACTION");
-				db.exec("CREATE TABLE users (uid INTEGER PRIMARY KEY AUTOINCREMENT, "+this.uname+" varchar(64), "+this.pword+" VARCHAR(64))");
+				db.exec("CREATE TABLE users (uid INTEGER PRIMARY KEY AUTOINCREMENT, "
+				+this.uname+" varchar(64), "+this.pword+" VARCHAR(64))");
 				db.exec("CREATE TABLE bookmarks (uid INTEGER FOREIGN KEY, cid INTEGER)");
-				db.exec("CREATE TABLE company (cid INTEGER PRIMARY KEY AUTOINCREMENT, "+this.cname+" varchar(64), "+this.type+" VARCHAR(64), "+this.info+" TEXT)");
+				db.exec("CREATE TABLE company (cid INTEGER PRIMARY KEY AUTOINCREMENT, "
+				+this.cname+" varchar(64), "+this.type+" VARCHAR(64), "+this.info+" TEXT)");
 				db.exec("COMMIT");
 				db.dispose();
 				System.out.println("Database was created.");
@@ -129,7 +131,7 @@ public class Server {
     /**
      * Opens the database specified by path
      * @param path, path to the database file
-     * @return SQLiteConnection on success, null on faliure
+     * @return SQLiteConnection on success, null on failure
      */
     private SQLiteConnection openDatabase(String path) {
     	SQLiteConnection db;
@@ -152,7 +154,7 @@ public class Server {
     
     private int cookieHandler(HttpExchange t) {
     	Headers head = t.getRequestHeaders();
-    	//Set<String> set = head.keySet();
+
     	List<String> cookie_field = head.get("Cookie");
     	StringBuilder sb = new StringBuilder();
     	for (int i = 0;  i < cookie_field.size(); i++) {
