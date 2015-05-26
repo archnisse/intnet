@@ -194,6 +194,10 @@ public class Server {
         				removeComp(cookies, head);
         				break;
     			}
+    			// Reset the server cookie, we have already responded to the request it held
+    			List<String> value = new ArrayList<String>();
+    			value.add("server=");
+    			head.put("Set-Cookie", value);
     			// No reason to look at further cookies
     			break;
     		}
